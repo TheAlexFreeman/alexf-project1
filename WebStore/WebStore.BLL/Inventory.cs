@@ -100,6 +100,10 @@ namespace WebStore.BLL
             }
             return _inventory[item];
         }
+        public int AddItem(Item item)
+        {
+            return AddItem(item, 1);
+        }
         /// <summary>
         /// Adds multiple items from another inventory
         /// </summary>
@@ -186,6 +190,10 @@ namespace WebStore.BLL
             }
             _inventory[item] -= toSubtract;
             return true;
+        }
+        public bool SubtractItem(Item item)
+        {
+            return SubtractItem(item, 1);
         }
         public double ItemCost(Item item)
         {
