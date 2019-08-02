@@ -7,6 +7,7 @@ namespace WebStore.BLL
     /// </summary>
     public class Item
     {
+        public Item() { }
         public Item(string name, double cost, int id = 0)
         {
             Id = id;
