@@ -26,15 +26,6 @@ namespace WebStore.Data.Entities
         public virtual DbSet<ProductOrder> ProductOrder { get; set; }
         public virtual DbSet<ProductType> ProductType { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=tcp:1907-training-freeman-sql.database.windows.net,1433;Initial Catalog=Project0-DB;Persist Security Info=False;User ID=AlexFreeman;Password=Mrpghpuf8Password;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
