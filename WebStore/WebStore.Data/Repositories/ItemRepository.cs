@@ -34,18 +34,18 @@ namespace WebStore.Data.Repositories
         public BLL.Item GetItemById(int id)
         {
             //throw new NotImplementedException();
-            return _dbContext.Item.FirstOrDefault(i => i.Id == id);
+            return Mapper.Map(_dbContext.Item.FirstOrDefault(i => i.Id == id));
         }
         public BLL.Item GetItemByName(string name)
         {
             //throw new NotImplementedException();
-            return _dbContext.Items.FirstOrDefault(i => i.Name == name);
+            return Mapper.Map(_dbContext.Item.FirstOrDefault(i => i.Name == name));
         }
 
-        public IEnumerable<Item> GetItems(string search = "")
+        public IEnumerable<BLL.Item> SearchItemsByName(string search = "")
         {
-            //return _dbContext.Items.Where(i => i.Name.Contains(search));
-            throw new NotImplementedException();
+            return _dbContext.Item.Where(i => i.Name.Contains(search)).Select(Mapper.Map);
+            //throw new NotImplementedException();
         }
 
         public IEnumerable<BLL.Item> GetItemsInCostRange(double min, double max)
@@ -58,19 +58,19 @@ namespace WebStore.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<BLL.Item> SearchItemsByName(string search)
-        {
-            throw new NotImplementedException();
-        }
+        //public IEnumerable<BLL.Item> SearchItemsByName(string search)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        BLL.Item IItemRepository.GetItemById(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //BLL.Item IItemRepository.GetItemById(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        BLL.Item IItemRepository.GetItemByName(string name)
-        {
-            throw new NotImplementedException();
-        }
+        //BLL.Item IItemRepository.GetItemByName(string name)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }
