@@ -10,6 +10,7 @@ namespace WebStore.App.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        [Range(0, 65535)]
         public double Cost { get; set; }
 
     }

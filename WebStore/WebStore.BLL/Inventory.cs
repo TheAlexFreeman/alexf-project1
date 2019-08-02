@@ -164,17 +164,21 @@ namespace WebStore.BLL
         /// </summary>
         /// <param name="product">Product to check against inventory</param>
         /// <returns>True iff product can be made from inventory</returns>
-        public bool ProductAvailable(Product product)
+        public bool ProductAvailable(Product product, int numProducts)
         {
             var productParts = product.Items;
             foreach (Item part in productParts)
             {
-                if (!ItemAvailable(part, product.Count(part)))
+                if (!ItemAvailable(part, product.Count(part) * numProducts))
                 {
                     return false;
                 }
             }
             return true;
+        }
+        public bool ProductAvailable(Product product)
+        {
+            return ProductAvailable(product, 1);
         }
         /// <summary>
         /// Subtracts given quantity of some item from inventory
@@ -200,5 +204,18 @@ namespace WebStore.BLL
             return item.Cost * Count(item);
         }
         
+        public bool MakeProduct(Product product, int quantity)
+        {
+            // Check availability before subtracting from stock
+            if (!ProductAvailable(product, quantity))
+            {
+                return false;
+            }
+            foreach(Item item in product.Items)
+            {
+                SubtractItem(item, product.Count(item) * quantity);
+            }
+            return true;
+        }
     }
 }

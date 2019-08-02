@@ -105,5 +105,23 @@ namespace WebStore.Tests
             Assert.False(subtracted);
             Assert.Equal(0, inventory.Count(item));
         }
+        [Theory]
+        [InlineData(1, 1, 1)]
+        public void TestProductAvailable(int inStock, int numParts, int numProducts)
+        {
+            // Arrange
+            var inventory = new Inventory();
+            var item = new Item();
+            inventory.AddItem(item, inStock);
+            var parts = new Dictionary<Item, int>();
+            parts.Add(item, numParts);
+            var product = new Product("TestProduct", 1, parts);
+            // Act
+            var available = inventory.ProductAvailable(product, numProducts);
+            // Assert
+            Assert.True(available);
+            var subtracted = inventory.SubtractItem(item, inStock);
+            Assert.False(inventory.ProductAvailable(product));
+        }
     }
 }
