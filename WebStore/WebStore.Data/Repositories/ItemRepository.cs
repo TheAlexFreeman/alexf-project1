@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using WebStore.BLL;
 using WebStore.BLL.Interfaces;
+using WebStore.Data.Entities;
 
 namespace WebStore.Data.Repositories
 {
-    public class ItemRepository : IItemRepository
+    public class ItemRepository : Repository, IItemRepository
     {
         //private readonly WebStoreContext _dbContext;
         //public ItemRepository(WebStoreContext dbContext)
         //{
         //    _dbContext = dbContext;
         //}
-
+        public ItemRepository(Project0DBContext dbContext) : base(dbContext) { }
         public void AddItem(BLL.Item item)
         {
             throw new NotImplementedException();
@@ -30,15 +31,15 @@ namespace WebStore.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Item GetItemById(int id)
+        public BLL.Item GetItemById(int id)
         {
-            throw new NotImplementedException();
-            //return _dbContext.Items.FirstOrDefault(i => i.Id == id);
+            //throw new NotImplementedException();
+            return _dbContext.Item.FirstOrDefault(i => i.Id == id);
         }
-        public Item GetItemByName(string name)
+        public BLL.Item GetItemByName(string name)
         {
-            throw new NotImplementedException();
-            //return _dbContext.Items.FirstOrDefault(i => i.Name == name);
+            //throw new NotImplementedException();
+            return _dbContext.Items.FirstOrDefault(i => i.Name == name);
         }
 
         public IEnumerable<Item> GetItems(string search = "")
