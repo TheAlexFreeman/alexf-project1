@@ -23,9 +23,15 @@ namespace WebStore.BLL
         //private readonly List<Order> Orders;
 
         public ISet<Item> ItemsInStock { get { return Inv.Items; } }
+
+        public int Count(Item item) { return Inv.Count(item); }
         
         public bool ProductAvailable(Product product, int quantity)
         {
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product), "Product cannot be null");
+            }
             return Inv.ProductAvailable(product, quantity);
         }
         public bool ProductAvailable(Product product)

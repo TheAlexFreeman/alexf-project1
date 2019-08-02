@@ -40,7 +40,7 @@ namespace WebStore.Tests
             for (int i = 0; i < numLocations; i++)
             {
                 locations.Add(new Location("Store #" + i.ToString()));
-                customer.DefaultStore = locations[i - 1];
+                customer.DefaultStore = locations[i];
             }
             // Assert
             Assert.Equal(locations[numLocations - 1], customer.DefaultStore);

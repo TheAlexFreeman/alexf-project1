@@ -111,13 +111,14 @@ namespace WebStore.BLL
         /// <returns>this</returns>
         public Inventory AddInventory(Inventory newInventory)
         {
-            if (newInventory == null) { return this; }
-            var newItems = newInventory.Items;
-            foreach (Item item in newItems)
-            {
-                AddItem(item, newInventory.Count(item));
-            }
-            return this;
+            return AddInventory(newInventory, 1);
+            //if (newInventory == null) { return this; }
+            //var newItems = newInventory.Items;
+            //foreach (Item item in newItems)
+            //{
+            //    AddItem(item, newInventory.Count(item));
+            //}
+            //return this;
         }
         /// <summary>
         /// Adds multiple items from another inventory
