@@ -9,11 +9,11 @@ namespace WebStore.Data.Repositories
 {
     public class ItemRepository : IItemRepository
     {
-        private readonly WebStoreContext _dbContext;
-        public ItemRepository(WebStoreContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        //private readonly WebStoreContext _dbContext;
+        //public ItemRepository(WebStoreContext dbContext)
+        //{
+        //    _dbContext = dbContext;
+        //}
 
         public void AddItem(BLL.Item item)
         {
@@ -32,16 +32,19 @@ namespace WebStore.Data.Repositories
 
         public Item GetItemById(int id)
         {
-            return _dbContext.Items.FirstOrDefault(i => i.Id == id);
+            throw new NotImplementedException();
+            //return _dbContext.Items.FirstOrDefault(i => i.Id == id);
         }
         public Item GetItemByName(string name)
         {
-            return _dbContext.Items.FirstOrDefault(i => i.Name == name);
+            throw new NotImplementedException();
+            //return _dbContext.Items.FirstOrDefault(i => i.Name == name);
         }
 
         public IEnumerable<Item> GetItems(string search = "")
         {
-            return _dbContext.Items.Where(i => i.Name.Contains(search));
+            //return _dbContext.Items.Where(i => i.Name.Contains(search));
+            throw new NotImplementedException();
         }
 
         public IEnumerable<BLL.Item> GetItemsInCostRange(double min, double max)

@@ -4,7 +4,7 @@ using Xunit;
 
 using WebStore.BLL;
 
-namespace Garden.Tests
+namespace WebStore.Tests
 {
     public class LocationTests
     {
@@ -53,7 +53,7 @@ namespace Garden.Tests
             // Arrange
             Location location = new Location("TestLocation");
             // Act
-            Action addNull = () => location.IncrementInventory(null);
+            Action addNull = () => location.AddToInventory(null);
             // Assert
             Assert.Throws<ArgumentNullException>(addNull);
         }
@@ -63,13 +63,13 @@ namespace Garden.Tests
         {
             // Arrange
             Location location = new Location("TestLocation");
-            Item item = new Item("TestItem");
-            location.IncrementInventory(item);
+            Item item = new Item();
+            location.AddToInventory(item);
             // Act
-            var enoughItems = location.DecrementInventory(item);
+            var enoughItems = location.SubtractFromInventory(item, 1);
             // Assert
             Assert.True(enoughItems);
-            Assert.Equal(0, location.Quantity(item));
+            Assert.Equal(0, location.Count(item));
         }
 
         [Theory]
@@ -80,13 +80,13 @@ namespace Garden.Tests
         {
             // Arrange
             Location location = new Location("TestLocation");
-            Item item = new Item("TestItem");
+            Item item = new Item();
             location.AddToInventory(item, 2);
             // Act
             var enoughItems = location.SubtractFromInventory(item, quantity);
             // Assert
             Assert.True(enoughItems);
-            Assert.Equal(2 - quantity, location.Quantity(item));
+            Assert.Equal(2 - quantity, location.Count(item));
         }
 
         [Fact]
@@ -94,8 +94,8 @@ namespace Garden.Tests
         {
             // Arrange
             Location location = new Location("TestLocation");
-            Item item = new Item("TestItem");
-            location.IncrementInventory(item);
+            Item item = new Item();
+            location.AddToInventory(item);
             // Act
             var enoughItems = location.SubtractFromInventory(item, 2);
             // Assert
@@ -106,7 +106,7 @@ namespace Garden.Tests
         {
             // Arrange
             Location location = new Location("TestLocation");
-            Item item = new Item("TestItem");
+            Item item = new Item();
             // Act
             Action subtractNegativeOne = () => location.SubtractFromInventory(item, -1);
             // Assert
@@ -118,7 +118,7 @@ namespace Garden.Tests
             // Arrange
             Location location = new Location("TestLocation");
             // Act
-            Action subtractNonexistent = () => location.DecrementInventory(new Item("TestItem"));
+            Action subtractNonexistent = () => location.SubtractFromInventory(new Item(), 1);
             // Assert
             Assert.Throws<KeyNotFoundException>(subtractNonexistent);
         }
@@ -128,7 +128,7 @@ namespace Garden.Tests
             // Arrange
             Location location = new Location("TestLocation");
             // Act
-            Action subtractNull = () => location.DecrementInventory(null);
+            Action subtractNull = () => location.SubtractFromInventory(null, 0);
             // Assert
             Assert.Throws<ArgumentNullException>(subtractNull);
         }
