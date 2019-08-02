@@ -7,10 +7,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
-<<<<<<< HEAD
-    <PackageReference Include="xunit" Version="2.4.1" />
-=======
->>>>>>> 50787fe385544526ca30090534b48d6a14105ef1
   </ItemGroup>
 
   <ItemGroup>
