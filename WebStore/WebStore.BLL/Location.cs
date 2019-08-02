@@ -32,5 +32,20 @@ namespace WebStore.BLL
         {
             return Inv.ProductAvailable(product, 1);
         }
+
+        public int AddToInventory(Item item, int toAdd)
+        {
+            return Inv.AddItem(item, toAdd);
+        }
+        public int AddToInventory(Item item)
+        {
+            return Inv.AddItem(item);
+        }
+
+        public bool SubtractFromInventory(Item item, int toSubtract)
+        {
+            return Inv.SubtractItem(item, toSubtract);
+        }
+        
     }
 }
