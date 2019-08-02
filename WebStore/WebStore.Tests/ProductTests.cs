@@ -37,12 +37,14 @@ namespace WebStore.Tests
             parts.Add(item1, 2);
             var product = new Product("TestProduct", 2.5, parts);
 
-            Assert.Equal(2, product.InventoryCost());
+            Assert.Equal(2, product.InventoryCost);
             Assert.Equal(0.5, product.SaleProfit);
 
             var item2 = new Item("TestItem2", 0.5);
             parts.Add(item2, 1);
             Assert.Equal(0, product.SaleProfit);
         }
+
+        
     }
 }
