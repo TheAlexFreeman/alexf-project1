@@ -18,17 +18,37 @@ namespace WebStore.Data.Repositories
         public ItemRepository(Project0DBContext dbContext) : base(dbContext) { }
         public void AddItem(BLL.Item item)
         {
-            throw new NotImplementedException();
+            if (item.Id != 0)
+            {
+                //_logger.Warn($"Item to be added has an ID ({item.Id}) already: ignoring.");
+                throw new ArgumentException($"Cannot add existing Item with ID {item.Id} to database");
+            }
+            //_logger.Info($"Adding item");
+            Entities.Item entity = Mapper.Map(item);
+            _dbContext.Add(entity);
+            item.Id = _dbContext.Item.Count();
         }
 
         public void DeleteItem(int id)
         {
-            throw new NotImplementedException();
+            var toDelete = _dbContext.Item.Find(id);
+            if (toDelete == null)
+            {
+                throw new ArgumentException($"Item with ID {id} does not exist in database");
+            }
+            _dbContext.Item.Remove(toDelete);
         }
 
         public void EditItem(int id, BLL.Item item)
         {
-            throw new NotImplementedException();
+            var toEdit = _dbContext.Item.Find(id);
+            if (toEdit == null)
+            {
+                throw new ArgumentException($"Item with ID {id} does not exist in database");
+            }
+            item.Id = toEdit.Id;
+            var newItem = Mapper.Map(item);
+            _dbContext.Entry(toEdit).CurrentValues.SetValues(newItem);
         }
 
         public BLL.Item GetItemById(int id)

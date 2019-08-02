@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using WebStore.Data.Entities;
+
 namespace WebStore.App
 {
     public class Startup
@@ -30,7 +32,8 @@ namespace WebStore.App
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            var webStoreContext = new Project0DBContext();
+            services.AddDbContext(webStoreContext);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
