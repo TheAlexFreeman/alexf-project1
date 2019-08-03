@@ -36,7 +36,7 @@ namespace WebStore.App
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<Project0DBContext>(optionsBuilder =>
+            services.AddDbContext<StoreDBContext>(optionsBuilder =>
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("ProjectDB")));
             services.AddScoped<IItemRepository, ItemRepository>();
 

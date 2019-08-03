@@ -15,7 +15,7 @@ namespace WebStore.Data.Repositories
         //{
         //    _dbContext = dbContext;
         //}
-        public ItemRepository(Project0DBContext dbContext) : base(dbContext) { }
+        public ItemRepository(StoreDBContext dbContext) : base(dbContext) { }
         public void AddItem(BLL.Item item)
         {
             if (item.Id != 0)

@@ -11,7 +11,9 @@ namespace WebStore.Data.Entities
         }
 
         public int Id { get; set; }
-        public DateTime Time { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime LastModified { get; set; }
+        public bool IsOpen { get; set; }
         public int BuyerId { get; set; }
         public int SellerId { get; set; }
 

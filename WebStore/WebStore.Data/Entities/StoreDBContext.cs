@@ -4,27 +4,35 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace WebStore.Data.Entities
 {
-    public partial class Project0DBContext : DbContext
+    public partial class StoreDBContext : DbContext
     {
-        public Project0DBContext()
+        public StoreDBContext()
         {
         }
 
-        public Project0DBContext(DbContextOptions<Project0DBContext> options)
+        public StoreDBContext(DbContextOptions<StoreDBContext> options)
             : base(options)
         {
         }
 
         public virtual DbSet<Customer> Customer { get; set; }
-        public virtual DbSet<Employee> Employee { get; set; }
         public virtual DbSet<InventoryItem> InventoryItem { get; set; }
         public virtual DbSet<Item> Item { get; set; }
         public virtual DbSet<Location> Location { get; set; }
         public virtual DbSet<Order> Order { get; set; }
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<ProductItem> ProductItem { get; set; }
+        public virtual DbSet<ProductLocation> ProductLocation { get; set; }
         public virtual DbSet<ProductOrder> ProductOrder { get; set; }
-        public virtual DbSet<ProductType> ProductType { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=tcp:1907-training-freeman-sql.database.windows.net,1433;Initial Catalog=StoreDB;Persist Security Info=False;User ID=AlexFreeman;Password=Mrpghpuf8Password;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,7 +40,7 @@ namespace WebStore.Data.Entities
 
             modelBuilder.Entity<Customer>(entity =>
             {
-                entity.ToTable("Customer", "Garden");
+                entity.ToTable("Customer", "Store");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
@@ -49,26 +57,7 @@ namespace WebStore.Data.Entities
                 entity.HasOne(d => d.DefaultStore)
                     .WithMany(p => p.Customer)
                     .HasForeignKey(d => d.DefaultStoreId)
-                    .HasConstraintName("FK_Customer_DefaultStoreID_to_Location");
-            });
-
-            modelBuilder.Entity<Employee>(entity =>
-            {
-                entity.ToTable("Employee", "Garden");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.FirstName).HasMaxLength(16);
-
-                entity.Property(e => e.LastName).HasMaxLength(16);
-
-                entity.Property(e => e.StoreId).HasColumnName("StoreID");
-
-                entity.HasOne(d => d.Store)
-                    .WithMany(p => p.Employee)
-                    .HasForeignKey(d => d.StoreId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Employee__StoreI__51BA1E3A");
+                    .HasConstraintName("FK_Customers_DefaultStoreID_to_Location");
             });
 
             modelBuilder.Entity<InventoryItem>(entity =>
@@ -76,7 +65,7 @@ namespace WebStore.Data.Entities
                 entity.HasKey(e => new { e.LocationId, e.ItemId })
                     .HasName("PK_LocationID_ItemID");
 
-                entity.ToTable("InventoryItem", "Garden");
+                entity.ToTable("InventoryItem", "Store");
 
                 entity.Property(e => e.LocationId).HasColumnName("LocationID");
 
@@ -95,7 +84,7 @@ namespace WebStore.Data.Entities
 
             modelBuilder.Entity<Item>(entity =>
             {
-                entity.ToTable("Item", "Garden");
+                entity.ToTable("Item", "Store");
 
                 entity.HasIndex(e => e.Name)
                     .HasName("U_ItemName")
@@ -112,7 +101,7 @@ namespace WebStore.Data.Entities
 
             modelBuilder.Entity<Location>(entity =>
             {
-                entity.ToTable("Location", "Garden");
+                entity.ToTable("Location", "Store");
 
                 entity.HasIndex(e => e.Name)
                     .HasName("U_StoreName")
@@ -127,15 +116,17 @@ namespace WebStore.Data.Entities
 
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.ToTable("Order", "Garden");
+                entity.ToTable("Order", "Store");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.BuyerId).HasColumnName("BuyerID");
 
+                entity.Property(e => e.LastModified).HasDefaultValueSql("(getdate())");
+
                 entity.Property(e => e.SellerId).HasColumnName("SellerID");
 
-                entity.Property(e => e.Time).HasDefaultValueSql("(getdate())");
+                entity.Property(e => e.Start).HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Buyer)
                     .WithMany(p => p.Order)
@@ -151,7 +142,7 @@ namespace WebStore.Data.Entities
 
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.ToTable("Product", "Garden");
+                entity.ToTable("Product", "Store");
 
                 entity.HasIndex(e => e.Name)
                     .HasName("U_ProductName")
@@ -164,13 +155,6 @@ namespace WebStore.Data.Entities
                     .HasMaxLength(64);
 
                 entity.Property(e => e.Price).HasColumnType("money");
-
-                entity.Property(e => e.TypeId).HasColumnName("TypeID");
-
-                entity.HasOne(d => d.Type)
-                    .WithMany(p => p.Product)
-                    .HasForeignKey(d => d.TypeId)
-                    .HasConstraintName("FK_Product_TypeID_to_ProductType");
             });
 
             modelBuilder.Entity<ProductItem>(entity =>
@@ -178,7 +162,7 @@ namespace WebStore.Data.Entities
                 entity.HasKey(e => new { e.ProductId, e.ItemId })
                     .HasName("PK_ProductID_ItemID");
 
-                entity.ToTable("ProductItem", "Garden");
+                entity.ToTable("ProductItem", "Store");
 
                 entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
@@ -195,12 +179,34 @@ namespace WebStore.Data.Entities
                     .HasConstraintName("FK_ProductItem_ProductID_to_Product");
             });
 
+            modelBuilder.Entity<ProductLocation>(entity =>
+            {
+                entity.HasKey(e => new { e.ProductId, e.LocationId })
+                    .HasName("PK_ProductID_LocationID");
+
+                entity.ToTable("ProductLocation", "Store");
+
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+                entity.Property(e => e.LocationId).HasColumnName("LocationID");
+
+                entity.HasOne(d => d.Location)
+                    .WithMany(p => p.ProductLocation)
+                    .HasForeignKey(d => d.LocationId)
+                    .HasConstraintName("FK_ProductLocation_LocationID_to_Location");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.ProductLocation)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK_ProductLocation_ProductID_to_Product");
+            });
+
             modelBuilder.Entity<ProductOrder>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
                     .HasName("PK_OrderID_ProductID");
 
-                entity.ToTable("ProductOrder", "Garden");
+                entity.ToTable("ProductOrder", "Store");
 
                 entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
@@ -215,26 +221,6 @@ namespace WebStore.Data.Entities
                     .WithMany(p => p.ProductOrder)
                     .HasForeignKey(d => d.ProductId)
                     .HasConstraintName("FK_ProductOrder_ProductID_to_Product");
-            });
-
-            modelBuilder.Entity<ProductType>(entity =>
-            {
-                entity.ToTable("ProductType", "Garden");
-
-                entity.HasIndex(e => e.Name)
-                    .HasName("U_TypeName")
-                    .IsUnique();
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(32);
-
-                entity.HasOne(d => d.TypeOfNavigation)
-                    .WithMany(p => p.InverseTypeOfNavigation)
-                    .HasForeignKey(d => d.TypeOf)
-                    .HasConstraintName("FK_ProductType_TypeOf_to_ProductType");
             });
         }
     }

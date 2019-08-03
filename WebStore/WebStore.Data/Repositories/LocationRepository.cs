@@ -10,7 +10,7 @@ namespace WebStore.Data.Repositories
 {
     public class LocationRepository : Repository, ILocationRepository
     {
-        public LocationRepository(Entities.Project0DBContext dbContext) : base(dbContext) { }
+        public LocationRepository(Entities.StoreDBContext dbContext) : base(dbContext) { }
         public IEnumerable<Location> GetLocations()
         {
             return _dbContext.Location.Select(Mapper.Map);

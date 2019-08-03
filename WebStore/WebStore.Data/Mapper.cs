@@ -5,8 +5,8 @@ using WebStore.BLL;
 
 namespace WebStore.Data
 {
-   public static class Mapper
-   {
+    public static class Mapper
+    {
         /// <summary>
         /// Translates Item from DB entity to business logic model
         /// </summary>
@@ -14,7 +14,7 @@ namespace WebStore.Data
         /// <returns>Item object from business logic library</returns>
         public static Item Map(Entities.Item item)
         {
-             return new Item(item.Name, decimal.ToDouble(item.Cost), item.Id);
+            return new Item(item.Name, decimal.ToDouble(item.Cost), item.Id);
         }
         /// <summary>
         /// Translates Item from business logic model to DB entity
@@ -80,7 +80,7 @@ namespace WebStore.Data
                 Name = location.Name,
             };
             // Add representation of all rows in InventoryItem table that refer to this row
-            foreach(Item item in location.ItemsInStock)
+            foreach (Item item in location.ItemsInStock)
             {
                 result.InventoryItem.Add(new Entities.InventoryItem
                 {
@@ -153,7 +153,8 @@ namespace WebStore.Data
         public static Dictionary<Product, int> Map(ICollection<Entities.ProductOrder> productOrders)
         {
             var result = new Dictionary<Product, int>();
-            foreach(var productOrder in productOrders) {
+            foreach (var productOrder in productOrders)
+            {
                 result.Add(Map(productOrder.Product), productOrder.Quantity);
             }
             return result;
@@ -165,7 +166,9 @@ namespace WebStore.Data
         /// <returns>Order object from business logic library</returns>
         public static Order Map(Entities.Order order)
         {
-            var result = new Order(Map(order.Buyer), Map(order.Seller), order.Time, null, Map(order.ProductOrder), order.Id);
+            DateTime? end = null;
+            if (order.IsOpen) { end = order.LastModified; }
+            var result = new Order(Map(order.Buyer), Map(order.Seller), order.Start, end, Map(order.ProductOrder), order.Id);
             foreach (var productOrder in order.ProductOrder)
             {
                 result.AddProduct(Map(productOrder.Product), productOrder.Quantity);
@@ -182,7 +185,8 @@ namespace WebStore.Data
             var result = new Entities.Order
             {
                 Id = order.Id,
-                Time = order.LastModified,
+                Start = order.Start,
+                LastModified = order.LastModified,
                 Buyer = Map(order.Buyer),
                 Seller = Map(order.Seller),
                 ProductOrder = new List<Entities.ProductOrder>()

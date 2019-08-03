@@ -82,7 +82,7 @@ CREATE TABLE Store.[Orders] (
 	ID INT IDENTITY,
 	[Start] DATETIME2 NOT NULL DEFAULT(GETDATE()),
 	LastModified DATETIME2 NOT NULL DEFAULT(GETDATE()),
-	IsOpen BIT NOT NULL DEFAULT(1),
+	IsOpen BIT NOT NULL,
 	BuyerID INT NOT NULL,
 	SellerID INT NOT NULL,
 	-- Constraints
@@ -141,6 +141,7 @@ CREATE TABLE Store.ProductLocations (
 	ProductID INT NOT NULL,
 	LocationID INT NOT NULL
 	-- Constraints
+	CONSTRAINT PK_ProductID_LocationID PRIMARY KEY CLUSTERED (ProductID, LocationID),
 	CONSTRAINT FK_ProductLocations_ProductID_to_Products FOREIGN KEY (ProductID) REFERENCES Store.Products(ID)
 		ON UPDATE CASCADE
 		ON DELETE CASCADE,

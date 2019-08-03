@@ -13,9 +13,9 @@ namespace WebStore.Data.Repositories
     /// </summary>
     public abstract class Repository //<T> where T : class //: IRepository<T> where T : class, ISearchable
     {
-        protected readonly Project0DBContext _dbContext;
+        protected readonly StoreDBContext _dbContext;
 
-        public Repository(Project0DBContext dbContext)
+        public Repository(StoreDBContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext), "DB Context cannot be null.");
         }
