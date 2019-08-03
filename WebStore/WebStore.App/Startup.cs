@@ -7,8 +7,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+using WebStore.BLL.Interfaces;
+using WebStore.Data.Entities;
+using WebStore.Data.Repositories;
 
 namespace WebStore.App
 {
@@ -31,6 +36,9 @@ namespace WebStore.App
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddDbContext<Project0DBContext>(optionsBuilder =>
+                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("ProjectDB")));
+            services.AddScoped<IItemRepository, ItemRepository>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
