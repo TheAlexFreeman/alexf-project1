@@ -6,17 +6,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using WebStore.BLL.Interfaces;
-using WebStore.Data.Entities;
-using WebStore.Data.Repositories;
+
 
 namespace WebStore.App.Controllers
 {
     public class ItemController : Controller
     {
-        private IItemRepository _itemRepo;
+        private readonly IItemRepository _itemRepo;
         public ItemController(IItemRepository itemRepo)
         {
-            _itemRepo = itemRepo ?? throw new ArgumentNullException(nameof(itemRepo));
+            _itemRepo = itemRepo ?? throw new ArgumentNullException("Item repository cannot be null");
         }
 
         // GET: Item

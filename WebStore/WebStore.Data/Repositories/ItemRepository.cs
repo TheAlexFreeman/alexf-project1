@@ -18,34 +18,54 @@ namespace WebStore.Data.Repositories
         public ItemRepository(Project0DBContext dbContext) : base(dbContext) { }
         public void AddItem(BLL.Item item)
         {
-            throw new NotImplementedException();
+            if (item.Id != 0)
+            {
+                //_logger.Warn($"Item to be added has an ID ({item.Id}) already: ignoring.");
+                throw new ArgumentException($"Cannot add existing Item with ID {item.Id} to database");
+            }
+            //_logger.Info($"Adding item");
+            Entities.Item entity = Mapper.Map(item);
+            _dbContext.Add(entity);
+            item.Id = _dbContext.Item.Count();
         }
 
         public void DeleteItem(int id)
         {
-            throw new NotImplementedException();
+            var toDelete = _dbContext.Item.Find(id);
+            if (toDelete == null)
+            {
+                throw new ArgumentException($"Item with ID {id} does not exist in database");
+            }
+            _dbContext.Item.Remove(toDelete);
         }
 
         public void EditItem(int id, BLL.Item item)
         {
-            throw new NotImplementedException();
+            var toEdit = _dbContext.Item.Find(id);
+            if (toEdit == null)
+            {
+                throw new ArgumentException($"Item with ID {id} does not exist in database");
+            }
+            item.Id = toEdit.Id;
+            var newItem = Mapper.Map(item);
+            _dbContext.Entry(toEdit).CurrentValues.SetValues(newItem);
         }
 
         public BLL.Item GetItemById(int id)
         {
             //throw new NotImplementedException();
-            return _dbContext.Item.FirstOrDefault(i => i.Id == id);
+            return Mapper.Map(_dbContext.Item.FirstOrDefault(i => i.Id == id));
         }
         public BLL.Item GetItemByName(string name)
         {
             //throw new NotImplementedException();
-            return _dbContext.Items.FirstOrDefault(i => i.Name == name);
+            return Mapper.Map(_dbContext.Item.FirstOrDefault(i => i.Name == name));
         }
 
-        public IEnumerable<Item> GetItems(string search = "")
+        public IEnumerable<BLL.Item> SearchItemsByName(string search = "")
         {
-            //return _dbContext.Items.Where(i => i.Name.Contains(search));
-            throw new NotImplementedException();
+            return _dbContext.Item.Where(i => i.Name.Contains(search)).Select(Mapper.Map);
+            //throw new NotImplementedException();
         }
 
         public IEnumerable<BLL.Item> GetItemsInCostRange(double min, double max)
@@ -58,19 +78,19 @@ namespace WebStore.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public IEnumerable<BLL.Item> SearchItemsByName(string search)
-        {
-            throw new NotImplementedException();
-        }
+        //public IEnumerable<BLL.Item> SearchItemsByName(string search)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        BLL.Item IItemRepository.GetItemById(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //BLL.Item IItemRepository.GetItemById(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        BLL.Item IItemRepository.GetItemByName(string name)
-        {
-            throw new NotImplementedException();
-        }
+        //BLL.Item IItemRepository.GetItemByName(string name)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

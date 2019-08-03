@@ -6,10 +6,10 @@ using WebStore.BLL;
 
 namespace WebStore.App.Models
 {
-    public class Customer
+    public class CustomerViewModel
     {
-        public Customer() { }
-        public Customer(string firstName, string lastName, Location defaultStore = null, int id = 0)
+        public CustomerViewModel() { }
+        public CustomerViewModel(string firstName, string lastName, LocationViewModel defaultStore = null, int id = 0)
         {
             Id = id;
             FirstName = firstName;
@@ -21,7 +21,7 @@ namespace WebStore.App.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get { return $"{FirstName} {LastName}"; } }
-        public Location DefaultStore { get; set; }
+        public LocationViewModel DefaultStore { get; set; }
 
 
     }

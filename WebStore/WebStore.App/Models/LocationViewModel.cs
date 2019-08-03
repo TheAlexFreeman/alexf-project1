@@ -24,33 +24,33 @@ namespace WebStore.App.Models
         //private readonly List<Customer> Customers;
         //private readonly List<Order> Orders;
 
-        public ISet<Item> ItemsInStock { get { return Inv.Items; } }
+        public ISet<ItemViewModel> ItemsInStock { get { return Inv.Items; } }
 
-        public int Count(Item item) { return Inv.Count(item); }
+        public int Count(ItemViewModel item) { return Inv.Count(item); }
         
-        public bool ProductViewModelAvailable(ProductViewModel product, int quantity)
+        public bool ProductAvailable(ProductViewModel product, int quantity)
         {
             if (product == null)
             {
                 throw new ArgumentNullException(nameof(product), "ProductViewModel cannot be null");
             }
-            return Inv.ProductViewModelAvailable(product, quantity);
+            return Inv.ProductAvailable(product, quantity);
         }
-        public bool ProductViewModelAvailable(ProductViewModel product)
+        public bool ProductAvailable(ProductViewModel product)
         {
-            return Inv.ProductViewModelAvailable(product, 1);
+            return Inv.ProductAvailable(product, 1);
         }
 
-        public int AddToInventoryViewModel(Item item, int toAdd)
+        public int AddToInventory(ItemViewModel item, int toAdd)
         {
             return Inv.AddItem(item, toAdd);
         }
-        public int AddToInventoryViewModel(Item item)
+        public int AddToInventory(ItemViewModel item)
         {
             return Inv.AddItem(item);
         }
 
-        public bool SubtractFromInventoryViewModel(Item item, int toSubtract)
+        public bool SubtractFromInventory(ItemViewModel item, int toSubtract)
         {
             return Inv.SubtractItem(item, toSubtract);
         }

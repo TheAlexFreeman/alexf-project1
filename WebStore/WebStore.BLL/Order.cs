@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using WebStore.BLL;
 
-namespace WebStore.Data
+namespace WebStore.BLL
 {
-    public class Product
+    public class Order
     {
     }
 }

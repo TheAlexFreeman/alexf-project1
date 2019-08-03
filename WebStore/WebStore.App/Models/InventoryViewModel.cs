@@ -45,7 +45,7 @@ namespace WebStore.App.Models
         /// <summary>
         /// Convenience property to list all items in inventory
         /// </summary>
-        public ISet<ItemViewModel> ItemViewModels
+        public ISet<ItemViewModel> Items
         {
             get { return new HashSet<ItemViewModel>(_inventory.Keys); }
         }
@@ -55,7 +55,7 @@ namespace WebStore.App.Models
         /// <returns>Sum of inventory items cost multiplied by quantity of each</returns>
         public double TotalCost
         {
-            get { return ItemViewModels.Select(ItemViewModelCost).Sum(); }
+            get { return Items.Select(ItemCost).Sum(); }
         }
         /// <summary>
         /// Looks up quantity of given item in stock
@@ -81,7 +81,7 @@ namespace WebStore.App.Models
         /// <param name="item">ItemViewModel to be added</param>
         /// <param name="toAdd">Quantity to add</param>
         /// <returns>New total in stock</returns>
-        public int AddItemViewModel(ItemViewModel item, int toAdd)
+        public int AddItem(ItemViewModel item, int toAdd)
         {
             if (item == null)
             {
@@ -101,18 +101,18 @@ namespace WebStore.App.Models
             }
             return _inventory[item];
         }
-        public int AddItemViewModel(ItemViewModel item)
+        public int AddItem(ItemViewModel item)
         {
-            return AddItemViewModel(item, 1);
+            return AddItem(item, 1);
         }
         /// <summary>
         /// Adds multiple items from another inventory
         /// </summary>
         /// <param name="newInventoryViewModel">InventoryViewModel to be added to this one</param>
         /// <returns>this</returns>
-        public InventoryViewModel AddInventoryViewModel(InventoryViewModel newInventoryViewModel)
+        public InventoryViewModel AddInventory(InventoryViewModel newInventoryViewModel)
         {
-            return AddInventoryViewModel(newInventoryViewModel, 1);
+            return AddInventory(newInventoryViewModel, 1);
             //if (newInventoryViewModel == null) { return this; }
             //var newItemViewModels = newInventoryViewModel.ItemViewModels;
             //foreach (ItemViewModel item in newItemViewModels)
@@ -126,13 +126,13 @@ namespace WebStore.App.Models
         /// </summary>
         /// <param name="newInventoryViewModel">InventoryViewModel to be added to this one</param>
         /// <returns>this</returns>
-        public InventoryViewModel AddInventoryViewModel(InventoryViewModel newInventoryViewModel, int toAdd)
+        public InventoryViewModel AddInventory(InventoryViewModel newInventoryViewModel, int toAdd)
         {
             if (newInventoryViewModel == null) { return this; }
-            var newItemViewModels = newInventoryViewModel.ItemViewModels;
+            var newItemViewModels = newInventoryViewModel.Items;
             foreach (ItemViewModel item in newItemViewModels)
             {
-                AddItemViewModel(item, newInventoryViewModel.Count(item) * toAdd);
+                AddItem(item, newInventoryViewModel.Count(item) * toAdd);
             }
             return this;
         }
@@ -141,13 +141,13 @@ namespace WebStore.App.Models
         /// </summary>
         /// <param name="newInventoryViewModel">InventoryViewModel to be added to this one</param>
         /// <returns>this</returns>
-        public InventoryViewModel AddInventoryViewModel(IDictionary<ItemViewModel, int> newInventoryViewModel)
+        public InventoryViewModel AddInventory(IDictionary<ItemViewModel, int> newInventoryViewModel)
         {
             if (newInventoryViewModel == null) { return this; }
             var newItemViewModels = newInventoryViewModel.Keys;
             foreach (ItemViewModel item in newItemViewModels)
             {
-                AddItemViewModel(item, newInventoryViewModel[item]);
+                AddItem(item, newInventoryViewModel[item]);
             }
             return this;
         }
@@ -157,7 +157,7 @@ namespace WebStore.App.Models
         /// <param name="item">ItemViewModel to check against inventory</param>
         /// <param name="quantity">Quantity of item desired</param>
         /// <returns>True iff inventory has enough items</returns>
-        public bool ItemViewModelAvailable(ItemViewModel item, int quantity)
+        public bool ItemAvailable(ItemViewModel item, int quantity)
         {
             return Count(item) >= quantity;
         }
@@ -166,19 +166,19 @@ namespace WebStore.App.Models
         /// </summary>
         /// <param name="product">Product to check against inventory</param>
         /// <returns>True iff product can be made from inventory</returns>
-        public bool ProductAvailable(Product product, int numProducts)
+        public bool ProductAvailable(ProductViewModel product, int numProducts)
         {
-            var productParts = product.ItemViewModels;
+            var productParts = product.Items;
             foreach (ItemViewModel part in productParts)
             {
-                if (!ItemViewModelAvailable(part, product.Count(part) * numProducts))
+                if (!ItemAvailable(part, product.Count(part) * numProducts))
                 {
                     return false;
                 }
             }
             return true;
         }
-        public bool ProductAvailable(Product product)
+        public bool ProductAvailable(ProductViewModel product)
         {
             return ProductAvailable(product, 1);
         }
@@ -188,7 +188,7 @@ namespace WebStore.App.Models
         /// <param name="item">ItemViewModel to subtract</param>
         /// <param name="toSubtract">Quantity to subtract</param>
         /// <returns>True iff InventoryViewModel has enough items to remove</returns>
-        public bool SubtractItemViewModel(ItemViewModel item, int toSubtract)
+        public bool SubtractItem(ItemViewModel item, int toSubtract)
         {
             if (Count(item) < toSubtract)
             {
@@ -197,25 +197,25 @@ namespace WebStore.App.Models
             _inventory[item] -= toSubtract;
             return true;
         }
-        public bool SubtractItemViewModel(ItemViewModel item)
+        public bool SubtractItem(ItemViewModel item)
         {
-            return SubtractItemViewModel(item, 1);
+            return SubtractItem(item, 1);
         }
-        public double ItemViewModelCost(ItemViewModel item)
+        public double ItemCost(ItemViewModel item)
         {
             return item.Cost * Count(item);
         }
         
-        public bool MakeProduct(Product product, int quantity)
+        public bool MakeProduct(ProductViewModel product, int quantity)
         {
             // Check availability before subtracting from stock
             if (!ProductAvailable(product, quantity))
             {
                 return false;
             }
-            foreach(ItemViewModel item in product.ItemViewModels)
+            foreach(ItemViewModel item in product.Items)
             {
-                SubtractItemViewModel(item, product.Count(item) * quantity);
+                SubtractItem(item, product.Count(item) * quantity);
             }
             return true;
         }

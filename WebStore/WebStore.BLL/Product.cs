@@ -22,6 +22,13 @@ namespace WebStore.BLL
             Price = price;
             Parts = new Inventory(parts);
         }
+        public Product(string name, double price, Inventory parts, int id = 0)
+        {
+            Id = id;
+            Name = name;
+            Price = price;
+            Parts = parts;
+        }
         public int Id { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
