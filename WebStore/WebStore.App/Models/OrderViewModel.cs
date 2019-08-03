@@ -3,20 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using WebStore.BLL;
+
 namespace WebStore.App.Models
 {
     public class OrderViewModel
     {
+        public OrderViewModel(Order order)
+        {
+            Id = order.Id;
+            Buyer = new CustomerViewModel(order.Buyer);
+            Seller = new LocationViewModel(order.Seller);
+            Start = order.Start;
+            LastModified = order.LastModified;
+            if (order.IsOpen)
+            {
+                End = null;
+            } else
+            {
+                End = LastModified;
+            }
+            Products = new Dictionary<ProductViewModel, int>();
+            foreach(Product product in order.ProductSet)
+            {
+                Products.Add(new ProductViewModel(product), order.Quantity(product));
+            }
+        }
         public OrderViewModel() { Products = new Dictionary<ProductViewModel, int>(); Start = DateTime.Now; LastModified = Start; End = null; }
-        //public OrderViewModel(CustomerViewModel buyer, LocationViewModel seller, int id = 0)
-        //{
-        //    Id = id;
-        //    Buyer = buyer ?? throw new ArgumentNullException(nameof(buyer), "OrderViewModel buyer cannot be null");
-        //    Seller = seller ?? throw new ArgumentNullException(nameof(buyer), "OrderViewModel buyer cannot be null");
-        //    Products = new Dictionary<Product, int>();
-        //    Start = DateTime.Now;
-        //    End = null;
-        //}
         /// <summary>
         /// Creates a new order with buyer, seller, and existing set of products
         /// </summary>
@@ -41,7 +54,7 @@ namespace WebStore.App.Models
         /// <param name="seller">LocationViewModel where this order was fulfilled</param>
         /// <param name="time">Date and time this order was placed</param>
         /// <param name="id">Database ID of order</param>
-        public OrderViewModel(CustomerViewModel buyer, LocationViewModel seller, DateTime start, DateTime? end = null, IDictionary<Product, int> products = null, int id = 0)
+        public OrderViewModel(CustomerViewModel buyer, LocationViewModel seller, DateTime start, DateTime? end = null, IDictionary<ProductViewModel, int> products = null, int id = 0)
         {
             Id = id;
             Buyer = buyer ?? throw new ArgumentNullException();

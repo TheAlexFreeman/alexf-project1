@@ -11,6 +11,15 @@ namespace WebStore.App.Models
     /// </summary>
     public class InventoryViewModel
     {
+        public InventoryViewModel(Inventory inventory)
+        {
+            _inventory = new Dictionary<ItemViewModel, int>();
+
+            foreach (Item item in inventory.Items)
+            {
+                _inventory.Add(new ItemViewModel(item), inventory.Count(item));
+            }
+        }
         /// <summary>
         /// Constructs empty inventory
         /// </summary>

@@ -9,18 +9,33 @@ namespace WebStore.App.Models
 {
     public class LocationViewModel
     {
+        public LocationViewModel(Location location)
+        {
+            Id = location.Id;
+            Name = location.Name;
+            Products = new List<ProductViewModel>();
+            foreach(Product product in location.Products)
+            {
+                Products.Add(new ProductViewModel(product));
+            }
+            Inv = new InventoryViewModel();
+            foreach(Item item in location.ItemsInStock)
+            {
+                Inv.AddItem(new ItemViewModel(item), location.Count(item));
+            }
+        }
         public LocationViewModel() {}
         public LocationViewModel(string name, InventoryViewModel inv=null, IEnumerable<ProductViewModel> products=null, int id=0)
         {
             Id = id;
             Name = name;
-            ProductViewModels = products?.ToList() ?? new List<ProductViewModel>();
+            Products = products?.ToList() ?? new List<ProductViewModel>();
             Inv = inv ?? new InventoryViewModel();
         }
         public int Id { get; set; }
         public string Name { get; set; }
         private readonly InventoryViewModel Inv;
-        public readonly List<ProductViewModel> ProductViewModels;
+        public readonly List<ProductViewModel> Products;
         //private readonly List<Customer> Customers;
         //private readonly List<Order> Orders;
 

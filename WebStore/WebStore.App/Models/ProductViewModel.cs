@@ -8,6 +8,17 @@ namespace WebStore.App.Models
 {
     public class ProductViewModel
     {
+        public ProductViewModel(Product product)
+        {
+            Id = product.Id;
+            Name = product.Name;
+            Price = product.Price;
+            Parts = new InventoryViewModel();
+            foreach(Item item in product.Items)
+            {
+                Parts.AddItem(new ItemViewModel(item), product.Count(item));
+            }
+        }
         public ProductViewModel() { }
         public ProductViewModel(string name, double price, int id = 0)
         {
@@ -23,6 +34,7 @@ namespace WebStore.App.Models
             Price = price;
             Parts = new InventoryViewModel(parts);
         }
+        
         public int Id { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
