@@ -34,12 +34,12 @@ namespace WebStore.Data.Repositories
         public BLL.Item GetItemById(int id)
         {
             //throw new NotImplementedException();
-            return _dbContext.Item.FirstOrDefault(i => i.Id == id);
+            return Mapper.Map(_dbContext.Item.FirstOrDefault(i => i.Id == id));
         }
         public BLL.Item GetItemByName(string name)
         {
             //throw new NotImplementedException();
-            return _dbContext.Items.FirstOrDefault(i => i.Name == name);
+            return Mapper.Map(_dbContext.Item.FirstOrDefault(i => i.Name == name));
         }
 
         public IEnumerable<Item> GetItems(string search = "")

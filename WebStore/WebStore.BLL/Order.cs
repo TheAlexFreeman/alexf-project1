@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WebStore.BLL
 {
-    class Order
+    public class Order
     {
     }
 }
