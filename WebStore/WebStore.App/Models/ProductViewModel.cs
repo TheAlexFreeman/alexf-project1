@@ -35,5 +35,15 @@ namespace WebStore.App.Models
         {
             return Parts.Count(item);
         }
+
+        public InventoryViewModel ItemsNeeded(int quantity)
+        {
+            var result = new InventoryViewModel();
+            foreach (ItemViewModel item in Items)
+            {
+                result.AddItem(item, Count(item) * quantity);
+            }
+            return result;
+        }
     }
 }
