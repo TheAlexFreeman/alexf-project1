@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WebStore.BLL.Interfaces
 {
-    interface IProductRepository
+    public interface IProductRepository
     {
         Product GetProductById(int id);
         Product GetProductByName(string name);
