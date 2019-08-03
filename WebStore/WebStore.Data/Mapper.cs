@@ -65,6 +65,7 @@ namespace WebStore.Data
         /// <returns>Location object for business logic library</returns>
         public static Location Map(Entities.Location location)
         {
+            if (location == null) { return null; }
             return new Location(location.Name, Map(location.InventoryItem), null, location.Id);
         }
         /// <summary>
@@ -74,6 +75,7 @@ namespace WebStore.Data
         /// <returns>Representation of row in Location table</returns>
         public static Entities.Location Map(Location location)
         {
+            if (location == null) { return null; }
             var result = new Entities.Location
             {
                 Id = location.Id,
@@ -134,6 +136,7 @@ namespace WebStore.Data
         /// <returns>Customer object from business logic library</returns>
         public static Customer Map(Entities.Customer customer)
         {
+            if (customer == null) { return null; }
             return new Customer(customer.FirstName, customer.LastName, Map(customer.DefaultStore), customer.Id);
         }
         /// <summary>
@@ -143,11 +146,13 @@ namespace WebStore.Data
         /// <returns>Representation of row in Customer table</returns>
         public static Entities.Customer Map(Customer customer)
         {
+            if (customer == null) { return null; }
             return new Entities.Customer
             {
                 Id = customer.Id,
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
+                DefaultStore = Map(customer.DefaultStore)
             };
         }
         public static Dictionary<Product, int> Map(ICollection<Entities.ProductOrder> productOrders)
