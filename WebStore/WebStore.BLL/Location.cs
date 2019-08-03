@@ -7,7 +7,7 @@ namespace WebStore.BLL
 {
     public class Location
     {
-        public Location() {}
+        public Location() { Inv = new Inventory(); }
         public Location(string name, Inventory inv=null, IEnumerable<Product> products=null, int id=0)
         {
             Id = id;

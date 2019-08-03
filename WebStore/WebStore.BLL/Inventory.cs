@@ -189,6 +189,14 @@ namespace WebStore.BLL
         /// <returns>True iff Inventory has enough items to remove</returns>
         public bool SubtractItem(Item item, int toSubtract)
         {
+            if (toSubtract < 0)
+            {
+                throw new ArgumentOutOfRangeException("Cannot subtract negative number of items from inventory.");
+            }
+            if (!_inventory.ContainsKey(item))
+            {
+                throw new KeyNotFoundException("Cannot subtract nonexistent item from inventory");
+            }
             if (Count(item) < toSubtract)
             {
                 return false;
