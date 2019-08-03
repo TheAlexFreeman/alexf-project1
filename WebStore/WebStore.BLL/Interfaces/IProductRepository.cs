@@ -6,9 +6,9 @@ namespace WebStore.BLL.Interfaces
 {
     public interface IProductRepository
     {
+        IEnumerable<Product> GetProducts();
         Product GetProductById(int id);
         Product GetProductByName(string name);
-        IEnumerable<Product> GetProducts(string search = null);
         IEnumerable<Product> GetProductsInPriceRange(double min, double max);
     }
 }
