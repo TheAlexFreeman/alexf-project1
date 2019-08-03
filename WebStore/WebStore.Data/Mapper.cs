@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebStore.BLL;
-<<<<<<< HEAD
-using WebStore.Data.Entities;
-=======
-using WebStore.Data;
+//using WebStore.BLL;
+//using WebStore.Data;
 
->>>>>>> ab279f2f463d1e14c4698bbc492043817880a07c
 namespace WebStore.Data
 {
    public static class Mapper
