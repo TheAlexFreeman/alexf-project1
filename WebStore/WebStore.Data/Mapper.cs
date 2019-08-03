@@ -85,7 +85,7 @@ namespace WebStore.Data
                 result.InventoryItem.Add(new Entities.InventoryItem
                 {
                     Quantity = location.Count(item),
-                    Location = Map(location),
+                    Location = result,
                     Item = Map(item)
                 });
             }
@@ -120,7 +120,7 @@ namespace WebStore.Data
                 {
                     //ProductId = product.Id,
                     //ItemId = item.Id,
-                    Product = Map(product),
+                    Product = result,
                     Item = Map(item),
                     Quantity = product.Count(item)
                 });
@@ -150,47 +150,54 @@ namespace WebStore.Data
                 LastName = customer.LastName,
             };
         }
-        ///// <summary>
-        ///// Translates Order from DB entity to business logic model
-        ///// </summary>
-        ///// <param name="order">Representation of row in Order table</param>
-        ///// <returns>Order object from business logic library</returns>
-        //public static BLL.Order Map(Entities.Order order)
-        //{
-        //    var result = new Order(Map(order.Buyer), Map(order.Seller), order.Time, order.Id);
-        //    foreach (var productOrder in order.ProductOrder)
-        //    {
-        //        result.AddProduct(Map(productOrder.Product), productOrder.Quantity);
-        //    }
-        //    return result;
-        //}
-        ///// <summary>
-        ///// Translates Order from business logic model to DB entity
-        ///// </summary>
-        ///// <param name="order">Order object from business logic library</param>
-        ///// <returns>Representation of row in Order table</returns>
-        //public static Entities.Order Map(Order order)
-        //{
-        //    var result = new Entities.Order
-        //    {
-        //        Id = order.Id ?? 0,
-        //        Time = order.Time,
-        //        BuyerId = order.Buyer.Id ?? 0,
-        //        SellerId = order.Seller.Id,
-
-        //        Buyer = Map(order.Buyer),
-        //        Seller = Map(order.Seller)
-        //    };
-        //    // Add representation of each row in ProductOrder table
-        //    foreach(Product product in order.ProductList)
-        //    {
-        //        result.ProductOrder.Add(new ProductOrder{
-        //            ProductId = product.Id,
-        //            OrderId = order.Id ?? 0,
-        //            Quantity = order.Quantity(product)
-        //        });
-        //    }
-        //    return result;
-        //}
-   }
+        public static Dictionary<Product, int> Map(ICollection<Entities.ProductOrder> productOrders)
+        {
+            var result = new Dictionary<Product, int>();
+            foreach(var productOrder in productOrders) {
+                result.Add(Map(productOrder.Product), productOrder.Quantity);
+            }
+            return result;
+        }
+        /// <summary>
+        /// Translates Order from DB entity to business logic model
+        /// </summary>
+        /// <param name="order">Representation of row in Order table</param>
+        /// <returns>Order object from business logic library</returns>
+        public static Order Map(Entities.Order order)
+        {
+            var result = new Order(Map(order.Buyer), Map(order.Seller), order.Time, null, Map(order.ProductOrder), order.Id);
+            foreach (var productOrder in order.ProductOrder)
+            {
+                result.AddProduct(Map(productOrder.Product), productOrder.Quantity);
+            }
+            return result;
+        }
+        /// <summary>
+        /// Translates Order from business logic model to DB entity
+        /// </summary>
+        /// <param name="order">Order object from business logic library</param>
+        /// <returns>Representation of row in Order table</returns>
+        public static Entities.Order Map(Order order)
+        {
+            var result = new Entities.Order
+            {
+                Id = order.Id,
+                Time = order.LastModified,
+                Buyer = Map(order.Buyer),
+                Seller = Map(order.Seller),
+                ProductOrder = new List<Entities.ProductOrder>()
+            };
+            // Add representation of each row in ProductOrder table
+            foreach (Product product in order.ProductSet)
+            {
+                result.ProductOrder.Add(new Entities.ProductOrder
+                {
+                    Product = Map(product),
+                    Order = result,
+                    Quantity = order.Quantity(product)
+                });
+            }
+            return result;
+        }
+    }
 }
