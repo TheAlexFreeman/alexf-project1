@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using WebStore.BLL;
+<<<<<<< HEAD
 using WebStore.Data.Entities;
+=======
+using WebStore.Data;
+
+>>>>>>> ab279f2f463d1e14c4698bbc492043817880a07c
 namespace WebStore.Data
 {
    public static class Mapper
@@ -35,7 +40,7 @@ namespace WebStore.Data
         /// </summary>
         /// <param name="inventory">Collection of rows from InventoryItem join table</param>
         /// <returns>Inventory object for Location in business logic library</returns>
-        public static Inventory Map(IEnumerable<InventoryItem> inventory)
+        public static Inventory Map(IEnumerable<Entities.InventoryItem> inventory)
         {
             var result = new Inventory();
             foreach (var inventoryItem in inventory)
@@ -49,7 +54,7 @@ namespace WebStore.Data
         /// </summary>
         /// <param name="parts">Collection of rows from ProductItem join table</param>
         /// <returns>Inventory object for Product in business logic library</returns>
-        public static Inventory Map(IEnumerable<ProductItem> parts)
+        public static Inventory Map(IEnumerable<Entities.ProductItem> parts)
         {
             var result = new Inventory();
             foreach (var productItem in parts)
@@ -82,10 +87,8 @@ namespace WebStore.Data
             // Add representation of all rows in InventoryItem table that refer to this row
             foreach(BLL.Item item in location.ItemsInStock)
             {
-                result.InventoryItem.Add(new InventoryItem
+                result.InventoryItem.Add(new Entities.InventoryItem
                 {
-                    LocationId = location.Id,
-                    ItemId = item.Id,
                     Quantity = location.Count(item),
                     Location = Map(location),
                     Item = Map(item)
@@ -118,10 +121,13 @@ namespace WebStore.Data
             // Add representation of all rows in ProductItem table
             foreach (BLL.Item item in product.Items)
             {
-                result.ProductItem.Add(new ProductItem
+                result.ProductItem.Add(new Entities.ProductItem
                 {
-                    ProductId = product.Id,
-                    ItemId = item.Id,
+                    //ProductId = product.Id,
+                    //ItemId = item.Id,
+                    Product = Map(product),
+                    Item = Map(item),
+                    Quantity = product.Count(item)
                 });
             }
             return result;
@@ -149,11 +155,11 @@ namespace WebStore.Data
                 LastName = customer.LastName,
             };
         }
-        /// <summary>
-        /// Translates Order from DB entity to business logic model
-        /// </summary>
-        /// <param name="order">Representation of row in Order table</param>
-        /// <returns>Order object from business logic library</returns>
+        ///// <summary>
+        ///// Translates Order from DB entity to business logic model
+        ///// </summary>
+        ///// <param name="order">Representation of row in Order table</param>
+        ///// <returns>Order object from business logic library</returns>
         //public static BLL.Order Map(Entities.Order order)
         //{
         //    var result = new BLL.Order(Map(order.Buyer), Map(order.Seller), order.Time, order.Id);
@@ -163,11 +169,11 @@ namespace WebStore.Data
         //    }
         //    return result;
         //}
-        /// <summary>
-        /// Translates Order from business logic model to DB entity
-        /// </summary>
-        /// <param name="order">Order object from business logic library</param>
-        /// <returns>Representation of row in Order table</returns>
+        ///// <summary>
+        ///// Translates Order from business logic model to DB entity
+        ///// </summary>
+        ///// <param name="order">Order object from business logic library</param>
+        ///// <returns>Representation of row in Order table</returns>
         //public static Entities.Order Map(BLL.Order order)
         //{
         //    var result = new Entities.Order

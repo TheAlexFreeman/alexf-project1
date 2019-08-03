@@ -5,38 +5,29 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-using WebStore.BLL.Interfaces;
-
-
 namespace WebStore.App.Controllers
 {
-    public class ItemController : Controller
+    public class InventoryController : Controller
     {
-        private readonly IItemRepository _itemRepo;
-        public ItemController(IItemRepository itemRepo)
-        {
-            _itemRepo = itemRepo ?? throw new ArgumentNullException("Item repository cannot be null");
-        }
-
-        // GET: Item
+        // GET: Inventory
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: Item/Details/5
+        // GET: Inventory/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: Item/Create
+        // GET: Inventory/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Item/Create
+        // POST: Inventory/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -53,13 +44,13 @@ namespace WebStore.App.Controllers
             }
         }
 
-        // GET: Item/Edit/5
+        // GET: Inventory/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: Item/Edit/5
+        // POST: Inventory/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -76,13 +67,13 @@ namespace WebStore.App.Controllers
             }
         }
 
-        // GET: Item/Delete/5
+        // GET: Inventory/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: Item/Delete/5
+        // POST: Inventory/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
