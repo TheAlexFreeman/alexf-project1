@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-//using WebStore.BLL;
-//using WebStore.Data;
+using WebStore.BLL;
 
 namespace WebStore.Data
 {
@@ -13,16 +12,16 @@ namespace WebStore.Data
         /// </summary>
         /// <param name="item">Representation of row in Item table</param>
         /// <returns>Item object from business logic library</returns>
-        public static BLL.Item Map(Entities.Item item)
+        public static Item Map(Entities.Item item)
         {
-             return new BLL.Item(item.Name, decimal.ToDouble(item.Cost), item.Id);
+             return new Item(item.Name, decimal.ToDouble(item.Cost), item.Id);
         }
         /// <summary>
         /// Translates Item from business logic model to DB entity
         /// </summary>
         /// <param name="item">Item object from business logic library</param>
         /// <returns>Representation of row in Item table</returns>
-        public static Entities.Item Map(BLL.Item item)
+        public static Entities.Item Map(Item item)
         {
             return new Entities.Item
             {
@@ -64,16 +63,16 @@ namespace WebStore.Data
         /// </summary>
         /// <param name="location">Representation of row in Location table</param>
         /// <returns>Location object for business logic library</returns>
-        public static BLL.Location Map(Entities.Location location)
+        public static Location Map(Entities.Location location)
         {
-            return new BLL.Location(location.Name, Map(location.InventoryItem), null, location.Id);
+            return new Location(location.Name, Map(location.InventoryItem), null, location.Id);
         }
         /// <summary>
         /// Translates Location from business logic model to DB entity
         /// </summary>
         /// <param name="location">Location object from business logic library</param>
         /// <returns>Representation of row in Location table</returns>
-        public static Entities.Location Map(BLL.Location location)
+        public static Entities.Location Map(Location location)
         {
             var result = new Entities.Location
             {
@@ -81,7 +80,7 @@ namespace WebStore.Data
                 Name = location.Name,
             };
             // Add representation of all rows in InventoryItem table that refer to this row
-            foreach(BLL.Item item in location.ItemsInStock)
+            foreach(Item item in location.ItemsInStock)
             {
                 result.InventoryItem.Add(new Entities.InventoryItem
                 {
@@ -97,16 +96,16 @@ namespace WebStore.Data
         /// </summary>
         /// <param name="product">Representation of row in Product table</param>
         /// <returns>Product object from business logic library</returns>
-        public static BLL.Product Map(Entities.Product product)
+        public static Product Map(Entities.Product product)
         {
-            return new BLL.Product(product.Name, decimal.ToDouble(product.Price), Map(product.ProductItem), product.Id);
+            return new Product(product.Name, decimal.ToDouble(product.Price), Map(product.ProductItem), product.Id);
         }
         /// <summary>
         /// Translates Product from business logic model to DB entity
         /// </summary>
         /// <param name="product">Product object from business logic library</param>
         /// <returns>Representation of row in Product table</returns>
-        public static Entities.Product Map(BLL.Product product)
+        public static Entities.Product Map(Product product)
         {
             var result = new Entities.Product
             {
@@ -115,7 +114,7 @@ namespace WebStore.Data
                 Price = (decimal)product.Price
             };
             // Add representation of all rows in ProductItem table
-            foreach (BLL.Item item in product.Items)
+            foreach (Item item in product.Items)
             {
                 result.ProductItem.Add(new Entities.ProductItem
                 {
@@ -133,16 +132,16 @@ namespace WebStore.Data
         /// </summary>
         /// <param name="customer">Representation of row in Customer table</param>
         /// <returns>Customer object from business logic library</returns>
-        public static BLL.Customer Map(Entities.Customer customer)
+        public static Customer Map(Entities.Customer customer)
         {
-            return new BLL.Customer(customer.FirstName, customer.LastName, Map(customer.DefaultStore), customer.Id);
+            return new Customer(customer.FirstName, customer.LastName, Map(customer.DefaultStore), customer.Id);
         }
         /// <summary>
         /// Translates Customer from business logic model to DB entity
         /// </summary>
         /// <param name="customer">Customer object from business logic library</param>
         /// <returns>Representation of row in Customer table</returns>
-        public static Entities.Customer Map(BLL.Customer customer)
+        public static Entities.Customer Map(Customer customer)
         {
             return new Entities.Customer
             {
@@ -158,7 +157,7 @@ namespace WebStore.Data
         ///// <returns>Order object from business logic library</returns>
         //public static BLL.Order Map(Entities.Order order)
         //{
-        //    var result = new BLL.Order(Map(order.Buyer), Map(order.Seller), order.Time, order.Id);
+        //    var result = new Order(Map(order.Buyer), Map(order.Seller), order.Time, order.Id);
         //    foreach (var productOrder in order.ProductOrder)
         //    {
         //        result.AddProduct(Map(productOrder.Product), productOrder.Quantity);
@@ -170,7 +169,7 @@ namespace WebStore.Data
         ///// </summary>
         ///// <param name="order">Order object from business logic library</param>
         ///// <returns>Representation of row in Order table</returns>
-        //public static Entities.Order Map(BLL.Order order)
+        //public static Entities.Order Map(Order order)
         //{
         //    var result = new Entities.Order
         //    {
@@ -183,7 +182,7 @@ namespace WebStore.Data
         //        Seller = Map(order.Seller)
         //    };
         //    // Add representation of each row in ProductOrder table
-        //    foreach(BLL.Product product in order.ProductList)
+        //    foreach(Product product in order.ProductList)
         //    {
         //        result.ProductOrder.Add(new ProductOrder{
         //            ProductId = product.Id,

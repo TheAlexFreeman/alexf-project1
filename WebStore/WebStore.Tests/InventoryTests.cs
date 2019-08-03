@@ -102,6 +102,7 @@ namespace WebStore.Tests
                 Assert.True(subtracted);
                 Assert.Equal(q - ++i, inventory.Count(item));
             }
+            subtracted = inventory.SubtractItem(item);
             Assert.False(subtracted);
             Assert.Equal(0, inventory.Count(item));
         }
