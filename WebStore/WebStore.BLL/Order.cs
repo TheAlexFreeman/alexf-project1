@@ -7,7 +7,16 @@ namespace WebStore.BLL
 {
     public class Order
     {
-        public Order() { }
+        public Order() { Products = new Dictionary<Product, int>(); Start = DateTime.Now; End = null; }
+        //public Order(Customer buyer, Location seller, int id = 0)
+        //{
+        //    Id = id;
+        //    Buyer = buyer ?? throw new ArgumentNullException(nameof(buyer), "Order buyer cannot be null");
+        //    Seller = seller ?? throw new ArgumentNullException(nameof(buyer), "Order buyer cannot be null");
+        //    Products = new Dictionary<Product, int>();
+        //    Start = DateTime.Now;
+        //    End = null;
+        //}
         /// <summary>
         /// Creates a new order with buyer, seller, and existing set of products
         /// </summary>
@@ -15,13 +24,14 @@ namespace WebStore.BLL
         /// <param name="seller">Location where this order was sold</param>
         /// <param name="products">Dictionary mapping products to quantities in this order</param>
         /// <param name="id">Database ID of order</param>
-        public Order(Customer buyer, Location seller, IDictionary<Product, int> products, int id = 0)
+        public Order(Customer buyer, Location seller, IDictionary<Product, int> products = null, int id = 0)
         {
             Id = id;
             Buyer = buyer ?? throw new ArgumentNullException();
             Seller = seller ?? throw new ArgumentNullException();
             Products = products ?? new Dictionary<Product, int>();
-            Time = DateTime.Now;
+            Start = DateTime.Now;
+            End = null;
         }
         /// <summary>
         /// Creates a new order with buyer, seller, and empty product set
@@ -30,13 +40,18 @@ namespace WebStore.BLL
         /// <param name="seller">Location where this order was fulfilled</param>
         /// <param name="time">Date and time this order was placed</param>
         /// <param name="id">Database ID of order</param>
-        public Order(Customer buyer, Location seller, DateTime time, int id = 0)
+        public Order(Customer buyer, Location seller,  DateTime start, IDictionary<Product, int> products = null, DateTime? end = null, int id = 0)
         {
             Id = id;
             Buyer = buyer ?? throw new ArgumentNullException();
             Seller = seller ?? throw new ArgumentNullException();
-            Products = new Dictionary<Product, int>();
-            Time = time;
+            Products = products ?? new Dictionary<Product, int>();
+            Start = start;
+            if (end != null && end < start)
+            {
+                throw new ArgumentOutOfRangeException(nameof(end), "Order cannot end before it begins");
+            }
+            End = end;
         }
         /// <summary>
         /// Database ID of this order
@@ -53,7 +68,8 @@ namespace WebStore.BLL
         /// <summary>
         /// Date and time order was placed
         /// </summary>
-        public DateTime Time { get; set; }
+        public DateTime Start { get; }
+        private DateTime? End { get; set; }
         /// <summary>
         /// Set of products sold in order, with quantity of each
         /// </summary>
@@ -61,7 +77,7 @@ namespace WebStore.BLL
         /// <summary>
         /// Convenience property to list all products in order
         /// </summary>
-        public IEnumerable<Product> ProductList => Products.Keys;
+        public ISet<Product> ProductSet => new HashSet<Product>(Products.Keys);
         /// <summary>
         /// Gets quantity of given product currently in order
         /// </summary>
@@ -187,6 +203,18 @@ namespace WebStore.BLL
         public void RemoveProduct(Product product)
         {
             Products.Remove(product);
+        }
+
+        public bool IsOpen { get { return End == null; } }
+
+        public DateTime Close()
+        {
+            if (!IsOpen)
+            {
+                throw new InvalidOperationException("Cannot close order already closed.");
+            }
+            End = DateTime.Now;
+            return (DateTime)End;
         }
     }
 }
