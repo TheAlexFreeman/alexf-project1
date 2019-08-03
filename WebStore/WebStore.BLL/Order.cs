@@ -7,7 +7,7 @@ namespace WebStore.BLL
 {
     public class Order
     {
-        public Order() { Products = new Dictionary<Product, int>(); Start = DateTime.Now; End = null; }
+        public Order() { Products = new Dictionary<Product, int>(); Start = DateTime.Now; LastModified = Start; End = null; }
         //public Order(Customer buyer, Location seller, int id = 0)
         //{
         //    Id = id;
@@ -31,6 +31,7 @@ namespace WebStore.BLL
             Seller = seller ?? throw new ArgumentNullException();
             Products = products ?? new Dictionary<Product, int>();
             Start = DateTime.Now;
+            LastModified = Start;
             End = null;
         }
         /// <summary>
@@ -40,13 +41,14 @@ namespace WebStore.BLL
         /// <param name="seller">Location where this order was fulfilled</param>
         /// <param name="time">Date and time this order was placed</param>
         /// <param name="id">Database ID of order</param>
-        public Order(Customer buyer, Location seller,  DateTime start, IDictionary<Product, int> products = null, DateTime? end = null, int id = 0)
+        public Order(Customer buyer, Location seller,  DateTime start, DateTime? end = null, IDictionary<Product, int> products = null, int id = 0)
         {
             Id = id;
             Buyer = buyer ?? throw new ArgumentNullException();
             Seller = seller ?? throw new ArgumentNullException();
             Products = products ?? new Dictionary<Product, int>();
             Start = start;
+            LastModified = end ?? start;
             if (end != null && end < start)
             {
                 throw new ArgumentOutOfRangeException(nameof(end), "Order cannot end before it begins");
@@ -70,6 +72,7 @@ namespace WebStore.BLL
         /// </summary>
         public DateTime Start { get; }
         private DateTime? End { get; set; }
+        public DateTime LastModified { get; set; }
         /// <summary>
         /// Set of products sold in order, with quantity of each
         /// </summary>
@@ -163,6 +166,7 @@ namespace WebStore.BLL
             {
                 Products.Add(product, toAdd);
             }
+            LastModified = DateTime.Now;
             return Products[product];
         }
         /// <summary>
@@ -194,7 +198,12 @@ namespace WebStore.BLL
                 return false;
             }
             Products[product] -= toSubtract;
+            LastModified = DateTime.Now;
             return true;
+        }
+        public bool SubtractProduct(Product product)
+        {
+            return SubtractProduct(product, 1);
         }
         /// <summary>
         /// Removes product from order altogether
@@ -203,6 +212,7 @@ namespace WebStore.BLL
         public void RemoveProduct(Product product)
         {
             Products.Remove(product);
+            LastModified = DateTime.Now;
         }
 
         public bool IsOpen { get { return End == null; } }
@@ -213,8 +223,9 @@ namespace WebStore.BLL
             {
                 throw new InvalidOperationException("Cannot close order already closed.");
             }
-            End = DateTime.Now;
-            return (DateTime)End;
+            LastModified = DateTime.Now;
+            End = LastModified;
+            return LastModified;
         }
     }
 }
