@@ -5,14 +5,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using WebStore.App.Models;
+using WebStore.BLL.Interfaces;
+using WebStore.Data;
+
 namespace WebStore.App.Controllers
 {
     public class LocationController : Controller
     {
-        // GET: Location
-        public ActionResult Index()
+        private readonly ILocationRepository _locationRepo;
+        public LocationController(ILocationRepository locationRepo)
         {
-            return View();
+            _locationRepo = locationRepo ?? throw new ArgumentNullException(nameof(locationRepo));
+        }
+        // GET: Location
+        public ActionResult Index([FromQuery] string search = "")
+        {
+            IEnumerable<LocationViewModel> viewModel = _locationRepo.GetLocations()
+                .Where(l => l.Name.Contains(search))
+                .Select(l => new LocationViewModel(l));
+            return View(viewModel);
         }
 
         // GET: Location/Details/5
