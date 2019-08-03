@@ -27,9 +27,9 @@ namespace WebStore.App.Models
         public string Name { get; set; }
         public double Price { get; set; }
         private readonly InventoryViewModel Parts;
-        public ISet<ItemViewModel> ItemViewModels { get { return Parts.ItemViewModels; } }
-        public double InventoryViewModelCost { get { return Parts.TotalCost; } }
-        public double SaleProfit { get { return Price - InventoryViewModelCost; } }
+        public ISet<ItemViewModel> Items { get { return Parts.Items; } }
+        public double InventoryCost { get { return Parts.TotalCost; } }
+        public double SaleProfit { get { return Price - InventoryCost; } }
 
         public int Count(ItemViewModel item)
         {
