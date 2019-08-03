@@ -41,5 +41,14 @@ namespace WebStore.BLL
         {
             return Parts.Count(item);
         }
+        public Inventory ItemsNeeded(int quantity)
+        {
+            var result = new Inventory();
+            foreach(Item item in Items)
+            {
+                result.AddItem(item, Count(item) * quantity);
+            }
+            return result;
+        }
     }
 }
