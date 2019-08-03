@@ -27,4 +27,9 @@
     <ProjectReference Include="..\WebStore.Data\WebStore.Data.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Views\Location\" />
+  </ItemGroup>
+
 </Project>
