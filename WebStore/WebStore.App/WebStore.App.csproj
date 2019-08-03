@@ -23,7 +23,7 @@
 
 
   <ItemGroup>
-    <Folder Include="Views\Location\" />
+    <Folder Include="Views\Order\" />
   </ItemGroup>
 
 </Project>
