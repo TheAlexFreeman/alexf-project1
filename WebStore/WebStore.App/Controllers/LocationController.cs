@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using WebStore.App.Models;
 using WebStore.BLL.Interfaces;
-using WebStore.Data;
 
 namespace WebStore.App.Controllers
 {
@@ -18,6 +17,8 @@ namespace WebStore.App.Controllers
         {
             _locationRepo = locationRepo ?? throw new ArgumentNullException(nameof(locationRepo));
         }
+
+
         // GET: Location
         public ActionResult Index([FromQuery] string search = "")
         {
