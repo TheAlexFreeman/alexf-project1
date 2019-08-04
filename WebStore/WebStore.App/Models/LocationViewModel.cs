@@ -13,7 +13,7 @@ namespace WebStore.App.Models
         {
             Id = location.Id;
             Name = location.Name;
-            Products = new List<ProductViewModel>();
+            Products = new HashSet<ProductViewModel>();
             foreach(Product product in location.Products)
             {
                 Products.Add(new ProductViewModel(product));
@@ -25,17 +25,17 @@ namespace WebStore.App.Models
             }
         }
         public LocationViewModel() {}
-        public LocationViewModel(string name, InventoryViewModel inv=null, IEnumerable<ProductViewModel> products=null, int id=0)
+        public LocationViewModel(string name, InventoryViewModel inv=null, ISet<ProductViewModel> products=null, int id=0)
         {
             Id = id;
             Name = name;
-            Products = products?.ToList() ?? new List<ProductViewModel>();
+            Products = products ?? new HashSet<ProductViewModel>();
             Inv = inv ?? new InventoryViewModel();
         }
         public int Id { get; set; }
         public string Name { get; set; }
         private readonly InventoryViewModel Inv;
-        public readonly List<ProductViewModel> Products;
+        public readonly ISet<ProductViewModel> Products;
         //private readonly List<Customer> Customers;
         //private readonly List<Order> Orders;
 
@@ -75,7 +75,7 @@ namespace WebStore.App.Models
         {
             get
             {
-                return new Location(Name, Inv.AsInventory, Products.Select(pvm => pvm.AsProduct), Id);
+                return new Location(Name, Inv.AsInventory, new HashSet<Product>(Products.Select(pvm => pvm.AsProduct)), Id);
             }
         }
     }

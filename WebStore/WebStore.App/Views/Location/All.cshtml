@@ -1,10 +1,10 @@
-﻿@model IEnumerable<WebStore.App.Models.ProductViewModel>
+﻿@model IEnumerable<WebStore.App.Models.LocationViewModel>
 
 @{
-    ViewData["Title"] = "Order";
+    ViewData["Title"] = "All";
 }
 
-<h1>Order</h1>
+<h1>All</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -18,15 +18,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <!--<th>
-                @Html.DisplayNameFor(model => model.InventoryCost)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SaleProfit)
-            </th>-->
             <th></th>
         </tr>
     </thead>
@@ -39,15 +30,6 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <!--<td>
-                @Html.DisplayFor(modelItem => item.InventoryCost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SaleProfit)
-            </td>-->
             <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |

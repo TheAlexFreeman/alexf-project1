@@ -58,6 +58,15 @@ namespace WebStore.Data
             }
             return result;
         }
+        public static ISet<Product> Map(IEnumerable<Entities.ProductLocation> products)
+        {
+            var result = new HashSet<Product>();
+            foreach(var productLocation in products)
+            {
+                result.Add(Map(productLocation.Product));
+            }
+            return result;
+        }
         /// <summary>
         /// Translates Location from DB entity to business logic model
         /// </summary>
@@ -66,7 +75,7 @@ namespace WebStore.Data
         public static Location Map(Entities.Location location)
         {
             if (location == null) { return null; }
-            return new Location(location.Name, Map(location.InventoryItem), null, location.Id);
+            return new Location(location.Name, Map(location.InventoryItem), Map(location.ProductLocation), location.Id);
         }
         /// <summary>
         /// Translates Location from business logic model to DB entity
@@ -89,6 +98,14 @@ namespace WebStore.Data
                     Quantity = location.Count(item),
                     Location = result,
                     Item = Map(item)
+                });
+            }
+            foreach(Product product in location.Products)
+            {
+                result.ProductLocation.Add(new Entities.ProductLocation
+                {
+                    Product = Map(product),
+                    Location = Map(location)
                 });
             }
             return result;
@@ -173,7 +190,7 @@ namespace WebStore.Data
         {
             DateTime? end = null;
             if (order.IsOpen) { end = order.LastModified; }
-            var result = new Order(Map(order.Buyer), Map(order.Seller), order.Start, order.LastModified, end, Map(order.ProductOrder), order.Id);
+            var result = new Order(Map(order.Buyer), Map(order.Seller), order.Start, order.LastModified, order.IsOpen, Map(order.ProductOrder), order.Id);
             foreach (var productOrder in order.ProductOrder)
             {
                 result.AddProduct(Map(productOrder.Product), productOrder.Quantity);

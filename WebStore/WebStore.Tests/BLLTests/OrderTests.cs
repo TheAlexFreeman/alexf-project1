@@ -26,7 +26,7 @@ namespace WebStore.Tests.BLLTests
             // Act
             var order1 = new Order(customer, location);
             var order2 = new Order(customer, location, products);
-            var order3 = new Order(customer, location, time, DateTime.Now);
+            var order3 = new Order(customer, location, time, DateTime.Now, false);
             // Assert
             Assert.Equal(customer, order1.Buyer);
             Assert.Equal(location, order1.Seller);

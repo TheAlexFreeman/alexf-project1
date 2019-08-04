@@ -246,7 +246,7 @@ namespace WebStore.App.Models
         {
             get
             {
-                return new Order(Buyer.AsCustomer, Seller.AsLocation, Start, LastModified, End, new Dictionary<Product, int>(Products.Select(kvp => new KeyValuePair<Product, int>(kvp.Key.AsProduct, kvp.Value))), Id);
+                return new Order(Buyer.AsCustomer, Seller.AsLocation, Start, LastModified, IsOpen, new Dictionary<Product, int>(Products.Select(kvp => new KeyValuePair<Product, int>(kvp.Key.AsProduct, kvp.Value))), Id);
             }
         }
     }

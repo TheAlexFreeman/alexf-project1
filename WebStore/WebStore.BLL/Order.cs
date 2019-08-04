@@ -41,7 +41,7 @@ namespace WebStore.BLL
         /// <param name="seller">Location where this order was fulfilled</param>
         /// <param name="time">Date and time this order was placed</param>
         /// <param name="id">Database ID of order</param>
-        public Order(Customer buyer, Location seller,  DateTime start, DateTime? lastModified = null, DateTime? end = null, IDictionary<Product, int> products = null, int id = 0)
+        public Order(Customer buyer, Location seller,  DateTime start, DateTime? lastModified = null, bool isOpen=true, IDictionary<Product, int> products = null, int id = 0)
         {
             Id = id;
             Buyer = buyer ?? throw new ArgumentNullException();
@@ -50,14 +50,16 @@ namespace WebStore.BLL
             Start = start;
             if (lastModified != null && lastModified < start)
             {
-                throw new ArgumentOutOfRangeException(nameof(end), "Order cannot be modified before it begins");
+                throw new ArgumentOutOfRangeException(nameof(lastModified), "Order cannot be modified before it begins");
             }
             LastModified = lastModified ?? start;
-            if (end != null && end < lastModified)
+            if (isOpen)
             {
-                throw new ArgumentOutOfRangeException(nameof(end), "Order cannot end before last modification");
+                End = null;
+            } else
+            {
+                End = LastModified;
             }
-            End = end;
         }
         /// <summary>
         /// Database ID of this order

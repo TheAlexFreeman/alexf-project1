@@ -8,18 +8,18 @@ namespace WebStore.BLL
     public class Location
     {
         public Location() { Inv = new Inventory(); }
-        public Location(string name, Inventory inv=null, IEnumerable<Product> products=null, int id=0)
+        public Location(string name, Inventory inv=null, ISet<Product> products=null, int id=0)
         {
             Id = id;
             Name = name;
-            Products = products?.ToList() ?? new List<Product>();
+            Products = products ?? new HashSet<Product>();
             Inv = inv ?? new Inventory();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
         private readonly Inventory Inv;
-        public readonly List<Product> Products;
+        public readonly ISet<Product> Products;
 
         //private readonly List<Customer> Customers;
         //private readonly List<Order> Orders;
@@ -34,11 +34,15 @@ namespace WebStore.BLL
             {
                 throw new ArgumentNullException(nameof(product), "Product cannot be null");
             }
+            if (!Products.Contains(product))
+            {
+                return false;
+            }
             return Inv.ProductAvailable(product, quantity);
         }
         public bool ProductAvailable(Product product)
         {
-            return Inv.ProductAvailable(product, 1);
+            return ProductAvailable(product, 1);
         }
 
         public int AddToInventory(Item item, int toAdd)
