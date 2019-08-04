@@ -240,5 +240,14 @@ namespace WebStore.App.Models
             End = LastModified;
             return LastModified;
         }
+
+
+        public Order AsOrder
+        {
+            get
+            {
+                return new Order(Buyer.AsCustomer, Seller.AsLocation, Start, LastModified, End, new Dictionary<Product, int>(Products.Select(kvp => new KeyValuePair<Product, int>(kvp.Key.AsProduct, kvp.Value))), Id);
+            }
+        }
     }
 }

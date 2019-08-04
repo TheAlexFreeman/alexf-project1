@@ -70,5 +70,13 @@ namespace WebStore.App.Models
             return Inv.SubtractItem(item, toSubtract);
         }
         
+
+        public Location AsLocation
+        {
+            get
+            {
+                return new Location(Name, Inv.AsInventory, Products.Select(pvm => pvm.AsProduct), Id);
+            }
+        }
     }
 }

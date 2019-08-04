@@ -13,7 +13,7 @@ namespace WebStore.App.Models
             Id = customer.Id;
             FirstName = customer.FirstName;
             LastName = customer.LastName;
-            DefaultStore = customer.DefaultStore.Name;
+            DefaultStore = new LocationViewModel(customer.DefaultStore);
         }
         public CustomerViewModel() { }
         public CustomerViewModel(string firstName, string lastName, LocationViewModel defaultStore = null, int id = 0)
@@ -21,15 +21,22 @@ namespace WebStore.App.Models
             Id = id;
             FirstName = firstName;
             LastName = lastName;
-            DefaultStore = defaultStore?.Name;
+            DefaultStore = defaultStore;
         }
 
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get { return $"{FirstName} {LastName}"; } }
-        public string DefaultStore { get; set; }
+        public LocationViewModel DefaultStore { get; set; }
 
 
+        public Customer AsCustomer
+        {
+            get
+            {
+                return new Customer(FirstName, LastName, DefaultStore.AsLocation, Id);
+            }
+        }
     }
 }

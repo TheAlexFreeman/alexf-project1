@@ -18,7 +18,6 @@ namespace WebStore.App.Controllers
             _locationRepo = locationRepo ?? throw new ArgumentNullException(nameof(locationRepo));
         }
 
-        []
         // GET: Location
         public ActionResult Index([FromQuery] string search = "")
         {
@@ -60,7 +59,7 @@ namespace WebStore.App.Controllers
                 {
                     return View(viewModel);
                 }
-                var newLocation = new BLL.Location(viewModel);
+                var newLocation = viewModel.AsLocation;
                 _locationRepo.AddLocation(newLocation);
                 _locationRepo.Save();
                 return RedirectToAction(nameof(Index));
@@ -98,7 +97,7 @@ namespace WebStore.App.Controllers
                 {
                     return View(viewModel);
                 }
-                var newLocation = new BLL.Location(viewModel);
+                var newLocation = viewModel.AsLocation;
                 _locationRepo.EditLocation(id, newLocation);
                 _locationRepo.Save();
                 return RedirectToAction(nameof(Index));

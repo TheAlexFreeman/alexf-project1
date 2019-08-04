@@ -21,5 +21,13 @@ namespace WebStore.App.Models
         [Range(0, 65535)]
         public double Cost { get; set; }
 
+
+        public Item AsItem
+        {
+            get
+            {
+                return new Item(Name, Cost, Id);
+            }
+        }
     }
 }

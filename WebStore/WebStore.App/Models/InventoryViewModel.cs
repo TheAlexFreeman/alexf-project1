@@ -228,5 +228,14 @@ namespace WebStore.App.Models
             }
             return true;
         }
+
+
+        public Inventory AsInventory
+        {
+            get
+            {
+                return new Inventory(new Dictionary<Item, int>(_inventory.Select(kvp => new KeyValuePair<Item, int>(kvp.Key.AsItem, kvp.Value))));
+            }
+        }
     }
 }

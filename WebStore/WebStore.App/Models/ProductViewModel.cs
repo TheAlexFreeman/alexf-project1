@@ -57,5 +57,14 @@ namespace WebStore.App.Models
             }
             return result;
         }
+
+
+        public Product AsProduct
+        {
+            get
+            {
+                return new Product(Name, Price, Parts.AsInventory, Id);
+            }
+        }
     }
 }

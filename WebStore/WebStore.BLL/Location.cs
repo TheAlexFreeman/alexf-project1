@@ -20,7 +20,6 @@ namespace WebStore.BLL
         public string Name { get; set; }
         private readonly Inventory Inv;
         public readonly List<Product> Products;
-        private WebStore.App.Models.LocationViewModel viewModel;
 
         //private readonly List<Customer> Customers;
         //private readonly List<Order> Orders;

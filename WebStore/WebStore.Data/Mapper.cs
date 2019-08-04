@@ -173,7 +173,7 @@ namespace WebStore.Data
         {
             DateTime? end = null;
             if (order.IsOpen) { end = order.LastModified; }
-            var result = new Order(Map(order.Buyer), Map(order.Seller), order.Start, end, Map(order.ProductOrder), order.Id);
+            var result = new Order(Map(order.Buyer), Map(order.Seller), order.Start, order.LastModified, end, Map(order.ProductOrder), order.Id);
             foreach (var productOrder in order.ProductOrder)
             {
                 result.AddProduct(Map(productOrder.Product), productOrder.Quantity);
@@ -192,6 +192,7 @@ namespace WebStore.Data
                 Id = order.Id,
                 Start = order.Start,
                 LastModified = order.LastModified,
+                IsOpen = order.IsOpen,
                 Buyer = Map(order.Buyer),
                 Seller = Map(order.Seller),
                 ProductOrder = new List<Entities.ProductOrder>()
