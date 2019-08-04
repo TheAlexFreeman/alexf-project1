@@ -18,7 +18,7 @@ namespace WebStore.App.Controllers
             _locationRepo = locationRepo ?? throw new ArgumentNullException(nameof(locationRepo));
         }
 
-
+        []
         // GET: Location
         public ActionResult Index([FromQuery] string search = "")
         {
@@ -31,7 +31,15 @@ namespace WebStore.App.Controllers
         // GET: Location/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            BLL.Location location;
+            try
+            {
+                location = _locationRepo.GetLocationById(id);
+            } catch (KeyNotFoundException)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View(new LocationViewModel(location));
         }
 
         // GET: Location/Create
@@ -43,12 +51,18 @@ namespace WebStore.App.Controllers
         // POST: Location/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(LocationViewModel viewModel)
         {
             try
             {
                 // TODO: Add insert logic here
-
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
+                var newLocation = new BLL.Location(viewModel);
+                _locationRepo.AddLocation(newLocation);
+                _locationRepo.Save();
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -60,41 +74,66 @@ namespace WebStore.App.Controllers
         // GET: Location/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            BLL.Location location;
+            try
+            {
+                location = _locationRepo.GetLocationById(id);
+            }
+            catch (KeyNotFoundException)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View(new LocationViewModel(location));
         }
 
         // POST: Location/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, LocationViewModel viewModel)
         {
             try
             {
                 // TODO: Add update logic here
-
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
+                var newLocation = new BLL.Location(viewModel);
+                _locationRepo.EditLocation(id, newLocation);
+                _locationRepo.Save();
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(viewModel);
             }
         }
 
         // GET: Location/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            BLL.Location location;
+            try
+            {
+                location = _locationRepo.GetLocationById(id);
+            }
+            catch (KeyNotFoundException)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return View(new LocationViewModel(location));
         }
 
         // POST: Location/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, LocationViewModel viewModel)
         {
             try
             {
                 // TODO: Add delete logic here
-
+                _locationRepo.DeleteLocation(id);
+                _locationRepo.Save();
                 return RedirectToAction(nameof(Index));
             }
             catch

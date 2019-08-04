@@ -9,6 +9,10 @@ namespace WebStore.BLL.Interfaces
         IEnumerable<Location> GetLocations();
         Location GetLocationById(int id);
         Location GetLocationByName(string name);
+        void Save();
+        void DeleteLocation(int id);
+        void EditLocation(int id, Location newLocation);
+        void AddLocation(Location newLocation);
         //Location SearchLocationByName(string search);
         //Location SearchLocationByProductName(string search);
     }

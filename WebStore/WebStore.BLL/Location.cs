@@ -15,10 +15,13 @@ namespace WebStore.BLL
             Products = products?.ToList() ?? new List<Product>();
             Inv = inv ?? new Inventory();
         }
+
         public int Id { get; set; }
         public string Name { get; set; }
         private readonly Inventory Inv;
         public readonly List<Product> Products;
+        private WebStore.App.Models.LocationViewModel viewModel;
+
         //private readonly List<Customer> Customers;
         //private readonly List<Order> Orders;
 
@@ -46,6 +49,10 @@ namespace WebStore.BLL
         public int AddToInventory(Item item)
         {
             return Inv.AddItem(item);
+        }
+        public Inventory AddInventory(Inventory newInventory)
+        {
+            return Inv.AddInventory(newInventory);
         }
 
         public bool SubtractFromInventory(Item item, int toSubtract)

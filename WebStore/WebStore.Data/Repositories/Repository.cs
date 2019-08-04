@@ -20,6 +20,11 @@ namespace WebStore.Data.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext), "DB Context cannot be null.");
         }
 
+        public void Save()
+        {
+            _dbContext.SaveChanges();
+        }
+
         #region IDisposable Support
         private bool disposedValue = false;
 
