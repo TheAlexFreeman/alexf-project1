@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using WebStore.App.Models;
 using WebStore.BLL.Interfaces;
 
 

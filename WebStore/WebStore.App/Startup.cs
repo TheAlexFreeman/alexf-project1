@@ -38,7 +38,12 @@ namespace WebStore.App
 
             services.AddDbContext<StoreDBContext>(optionsBuilder =>
                 optionsBuilder.UseSqlServer(Configuration.GetConnectionString("ProjectDB")));
+
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

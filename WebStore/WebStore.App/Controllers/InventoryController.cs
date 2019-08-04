@@ -5,10 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using WebStore.App.Models;
+using WebStore.BLL.Interfaces;
+
 namespace WebStore.App.Controllers
 {
     public class InventoryController : Controller
     {
+        private readonly IItemRepository _itemRepo;
+        public InventoryController(IItemRepository itemRepo)
+        {
+            _itemRepo = itemRepo ?? throw new ArgumentNullException("Item repository cannot be null");
+        }
+
+
         // GET: Inventory
         public ActionResult Index()
         {

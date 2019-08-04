@@ -5,10 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using WebStore.App.Models;
+using WebStore.BLL.Interfaces;
+
 namespace WebStore.App.Controllers
 {
     public class OrderController : Controller
     {
+        private readonly IOrderRepository _orderRepo;
+        public OrderController(IOrderRepository orderRepo)
+        {
+            _orderRepo = orderRepo ?? throw new ArgumentNullException("Order repository cannot be null");
+        }
+
+
         // GET: Order
         public ActionResult Index()
         {

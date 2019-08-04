@@ -5,10 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using WebStore.App.Models;
+using WebStore.BLL.Interfaces;
+
 namespace WebStore.App.Controllers
 {
     public class ProductController : Controller
     {
+        private readonly IProductRepository _productRepo;
+        public ProductController(IProductRepository productRepo)
+        {
+            _productRepo = productRepo ?? throw new ArgumentNullException("Customer repository cannot be null");
+        }
+
+
         // GET: Product
         public ActionResult Index()
         {
