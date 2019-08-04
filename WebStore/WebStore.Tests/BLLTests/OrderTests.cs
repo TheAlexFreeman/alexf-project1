@@ -5,7 +5,7 @@ using Xunit;
 
 using WebStore.BLL;
 
-namespace WebStore.Tests
+namespace WebStore.Tests.BLLTests
 {
     public class OrderTests
     {

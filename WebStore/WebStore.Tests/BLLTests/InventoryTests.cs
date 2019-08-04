@@ -5,7 +5,7 @@ using System.Text;
 using WebStore.BLL;
 using Xunit;
 
-namespace WebStore.Tests
+namespace WebStore.Tests.BLLTests
 {
     public class InventoryTests
     {

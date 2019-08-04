@@ -2,7 +2,7 @@ using System;
 using WebStore.BLL;
 using Xunit;
 
-namespace WebStore.Tests
+namespace WebStore.Tests.BLLTests
 {
     public class ItemTests
     {
