@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,11 @@ namespace WebStore.App.Models
             Id = customer.Id;
             FirstName = customer.FirstName;
             LastName = customer.LastName;
-            DefaultStore = new LocationViewModel(customer.DefaultStore);
+            if (customer.DefaultStore != null)
+            {
+            DefaultStore = customer.DefaultStore?.Name;
+
+            }
         }
         public CustomerViewModel() { }
         public CustomerViewModel(string firstName, string lastName, LocationViewModel defaultStore = null, int id = 0)
@@ -21,21 +26,27 @@ namespace WebStore.App.Models
             Id = id;
             FirstName = firstName;
             LastName = lastName;
-            DefaultStore = defaultStore;
+            DefaultStore = defaultStore?.Name;
         }
 
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get { return $"{FirstName} {LastName}"; } }
-        public LocationViewModel DefaultStore { get; set; }
+        public string DefaultStore { get; set; }
+        public readonly List<SelectListItem> StoreOptions = new List<SelectListItem>
+        {
+            new SelectListItem {Value = "Berkeley", Text = "Berkeley"},
+            new SelectListItem {Value = "Arlington", Text = "Arlington"},
+            new SelectListItem {Value = "Las Vegas", Text = "Las Vegas"}
+        };
 
 
         public Customer AsCustomer
         {
             get
             {
-                return new Customer(FirstName, LastName, DefaultStore.AsLocation, Id);
+                return new Customer(FirstName, LastName, new Location(DefaultStore), Id);
             }
         }
     }

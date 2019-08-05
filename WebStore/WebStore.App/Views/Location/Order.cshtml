@@ -21,39 +21,38 @@
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
-            <!--<th>
-                @Html.DisplayNameFor(model => model.InventoryCost)
-            </th>
             <th>
-                @Html.DisplayNameFor(model => model.SaleProfit)
-            </th>-->
-            <th></th>
+                Quantity to Order
+            </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <!--<td>
-                @Html.DisplayFor(modelItem => item.InventoryCost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SaleProfit)
-            </td>-->
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        <form asp-action="Order">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        <label for="id-product-@item.Id">
+                            <input id="id-product-@item.Id" name="quantity-product-@item.Id" type="number" />
+                        </label>
+                    </td>
+                    @*<td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>*@
+                </tr>
+            }
+            <button type="submit"></button>
+        </form>
     </tbody>
 </table>

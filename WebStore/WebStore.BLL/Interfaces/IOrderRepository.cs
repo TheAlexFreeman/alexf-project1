@@ -13,5 +13,7 @@ namespace WebStore.BLL.Interfaces
         IEnumerable<Order> GetOrderHistoryInRange(DateTime min, DateTime max);
         IEnumerable<Order> GetOrdersInPriceRange(double min, double max);
         IEnumerable<Order> GetOrdersWithOpenState(bool isOpen);
+        void Save();
+
     }
 }

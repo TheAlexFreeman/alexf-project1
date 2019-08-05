@@ -10,5 +10,7 @@ namespace WebStore.BLL.Interfaces
         Product GetProductById(int id);
         Product GetProductByName(string name);
         IEnumerable<Product> GetProductsInPriceRange(double min, double max);
+        void Save();
+
     }
 }

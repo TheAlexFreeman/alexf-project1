@@ -27,6 +27,7 @@ namespace WebStore.App.Controllers
             return View(viewModel);
         }
 
+        [HttpGet]
         // GET: Location/Details/5
         public ActionResult Details(int id)
         {
@@ -40,6 +41,10 @@ namespace WebStore.App.Controllers
             }
             return View(new LocationViewModel(location));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
 
         // GET: Location/Create
         public ActionResult Create()

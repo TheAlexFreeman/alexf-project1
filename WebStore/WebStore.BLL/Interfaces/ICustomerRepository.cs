@@ -11,5 +11,10 @@ namespace WebStore.BLL.Interfaces
         Customer GetCustomerByName(string first, string last);
         IEnumerable<Customer> SearchCustomersByName(string search);
         IEnumerable<Customer> GetCustomersByLocation(int locationId);
+        void Save();
+
+        void AddCustomer(Customer customer);
+        void UpdateCustomer(Customer customer);
+        void DeleteCustomer(int id);
     }
 }
