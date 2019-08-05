@@ -74,9 +74,19 @@ namespace WebStore.Data.Repositories
             }
             if (_locations.Any(l => l.Id == newLocation.Id))
             {
-                throw new KeyNotFoundException("No location with ID {id} exists in database");
+                throw new KeyNotFoundException("Location with ID {id} already exists in database");
             }
             _locations.Add(Mapper.Map(newLocation));
+        }
+
+        public IEnumerable<Order> GetOrderHistory(int id)
+        {
+            return _dbContext.Order
+                .Where(o => o.SellerId == id)
+                .Include(o => o.Buyer)
+                .Include(o => o.ProductOrder)
+                .ThenInclude(po => po.Product)
+                .Select(Mapper.Map);
         }
     }
 }

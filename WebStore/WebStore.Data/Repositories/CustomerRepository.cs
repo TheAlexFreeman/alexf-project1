@@ -67,6 +67,16 @@ namespace WebStore.Data.Repositories
                 .Select(Mapper.Map);
         }
 
+        public IEnumerable<Order> GetOrderHistory(int id)
+        {
+            return _dbContext.Order
+                .Where(o => o.BuyerId == id)
+                .Include(o => o.Seller)
+                .Include(o => o.ProductOrder)
+                .ThenInclude(po => po.Product)
+                .Select(Mapper.Map);
+        }
+
         public IEnumerable<Customer> SearchCustomersByName(string search)
         {
             return _dbContext.Customer.Select(Mapper.Map).Where(c => c.FullName.Contains(search));

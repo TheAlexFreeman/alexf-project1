@@ -36,6 +36,7 @@ namespace WebStore.App.Models
         public string DefaultStore { get; set; }
         public readonly List<SelectListItem> StoreOptions = new List<SelectListItem>
         {
+            new SelectListItem{Value = "", Text = "(None)", Selected = true},
             new SelectListItem {Value = "Berkeley", Text = "Berkeley"},
             new SelectListItem {Value = "Arlington", Text = "Arlington"},
             new SelectListItem {Value = "Las Vegas", Text = "Las Vegas"}
@@ -46,7 +47,7 @@ namespace WebStore.App.Models
         {
             get
             {
-                return new Customer(FirstName, LastName, new Location(DefaultStore), Id);
+                return new Customer(FirstName, LastName, DefaultStore == null ? null : new Location(DefaultStore), Id);
             }
         }
     }

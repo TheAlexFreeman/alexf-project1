@@ -96,6 +96,8 @@ namespace WebStore.Data
                 result.InventoryItem.Add(new Entities.InventoryItem
                 {
                     Quantity = location.Count(item),
+                    LocationId = location.Id,
+                    ItemId = item.Id,
                     Location = result,
                     Item = Map(item)
                 });
@@ -104,6 +106,8 @@ namespace WebStore.Data
             {
                 result.ProductLocation.Add(new Entities.ProductLocation
                 {
+                    ProductId = product.Id,
+                    LocationId = location.Id,
                     Product = Map(product),
                     Location = Map(location)
                 });
@@ -137,8 +141,8 @@ namespace WebStore.Data
             {
                 result.ProductItem.Add(new Entities.ProductItem
                 {
-                    //ProductId = product.Id,
-                    //ItemId = item.Id,
+                    ProductId = product.Id,
+                    ItemId = item.Id,
                     Product = result,
                     Item = Map(item),
                     Quantity = product.Count(item)
@@ -169,6 +173,7 @@ namespace WebStore.Data
                 Id = customer.Id,
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
+                DefaultStoreId = customer.DefaultStore.Id,
                 DefaultStore = Map(customer.DefaultStore)
             };
         }
@@ -188,8 +193,6 @@ namespace WebStore.Data
         /// <returns>Order object from business logic library</returns>
         public static Order Map(Entities.Order order)
         {
-            DateTime? end = null;
-            if (order.IsOpen) { end = order.LastModified; }
             var result = new Order(Map(order.Buyer), Map(order.Seller), order.Start, order.LastModified, order.IsOpen, Map(order.ProductOrder), order.Id);
             foreach (var productOrder in order.ProductOrder)
             {
@@ -210,6 +213,8 @@ namespace WebStore.Data
                 Start = order.Start,
                 LastModified = order.LastModified,
                 IsOpen = order.IsOpen,
+                BuyerId = order.Buyer.Id,
+                SellerId = order.Seller.Id,
                 Buyer = Map(order.Buyer),
                 Seller = Map(order.Seller),
                 ProductOrder = new List<Entities.ProductOrder>()
@@ -219,6 +224,8 @@ namespace WebStore.Data
             {
                 result.ProductOrder.Add(new Entities.ProductOrder
                 {
+                    ProductId = product.Id,
+                    OrderId = order.Id,
                     Product = Map(product),
                     Order = result,
                     Quantity = order.Quantity(product)

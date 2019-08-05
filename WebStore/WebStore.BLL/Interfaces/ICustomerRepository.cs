@@ -16,5 +16,7 @@ namespace WebStore.BLL.Interfaces
         void AddCustomer(Customer customer);
         void UpdateCustomer(Customer customer);
         void DeleteCustomer(int id);
+        IEnumerable<Order> GetOrderHistory(int id);
+
     }
 }

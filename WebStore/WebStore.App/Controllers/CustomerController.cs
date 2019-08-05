@@ -161,5 +161,20 @@ namespace WebStore.App.Controllers
                 return View(viewModel);
             }
         }
+
+        [HttpGet]
+        public ActionResult History(int id)
+        {
+            try
+            {
+                var orders = _customerRepo.GetOrderHistory(id);
+                return View(orders.Select(o => new OrderViewModel(o)));
+            }
+            catch
+            {
+                // Use ErrorViewModel
+                return RedirectToAction(nameof(List));
+            }
+        }
     }
 }
