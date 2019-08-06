@@ -4,10 +4,10 @@
     ViewData["Title"] = "OrderHistory";
 }
 
-<h1>OrderHistory</h1>
+<h1>Order History for @Model.First().Buyer.FullName</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Order" asp-route-id="@Model.First().Buyer.Id" asp-route-storeName="@(Model.First().Buyer.DefaultStore ?? Model.First().Seller.Name)">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -16,22 +16,22 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
+                Store Location
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Start)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.LastModified)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Total)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.InventoryCost)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Profit)
+                @Html.DisplayNameFor(model => model.Products)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsOpen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
             </th>
             <th></th>
         </tr>
@@ -43,28 +43,41 @@
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Seller.Name)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Start)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LastModified)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Total)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.InventoryCost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Profit)
+                <ol>
+                    @foreach(var productName in item.Products.Keys)
+                    {
+                        <li>
+                            @productName : $@item.Prices[productName] &times; @item.Products[productName]
+                        </li>
+                    }
+                </ol>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsOpen)
             </td>
             <td>
+                $@Html.DisplayFor(modelItem => item.Total)
+            </td>
+            <td>
+                @if (item.IsOpen)
+                {
+                    @Html.ActionLink("Change Order", "Order", new { id = item.Buyer.Id, storeName = item.Seller.Name })
+                }
+            </td>
+            @*<td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
+            </td>*@
         </tr>
 }
     </tbody>

@@ -30,6 +30,13 @@ namespace WebStore.BLL
             Buyer = buyer ?? throw new ArgumentNullException();
             Seller = seller ?? throw new ArgumentNullException();
             Products = products ?? new Dictionary<Product, int>();
+            if (Products.Count == 0)
+            {
+                foreach(Product product in Seller.Products)
+                {
+                    Products.Add(product, 0);
+                }
+            }
             Start = DateTime.Now;
             LastModified = Start;
             IsOpen = true;

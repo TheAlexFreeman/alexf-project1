@@ -29,13 +29,13 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-<form id="order-form">
-    @foreach(ProductViewModel product in Model.Seller.Products)
+<form asp-action="Order" asp-route-storeId="@Model.Seller.Id" id="order-form">
+    @foreach(var kvp in Model.Products)
     {
     <div class="form-group">
-        <label asp-for="@product.Name" class="control-label">@product.Name : $@product.Price</label>
-        <input asp-for="@product.Name" type="number" class="form-control" />
-        <span asp-validation-for="@product.Name" class="text-danger"></span>
+        <label asp-for="@kvp.Key" class="control-label">@kvp.Key : $@Model.Seller.Prices[kvp.Key]</label>
+        <input name="@kvp.Key" type="number" class="form-control" />
+        <span asp-validation-for="@kvp.Key" class="text-danger"></span>
     </div>
     }
     <button type="submit" class="btn btn-primary">Place Order</button>

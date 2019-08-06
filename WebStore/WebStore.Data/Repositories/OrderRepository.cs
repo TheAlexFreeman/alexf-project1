@@ -106,7 +106,28 @@ namespace WebStore.Data.Repositories
             }
             var currentEntity = _dbContext.Order.Find(order.Id);
             var newEntity = Mapper.Map(order);
+            var oldProductOrders = currentEntity.ProductOrder.ToList();
+            var newProductOrders = newEntity.ProductOrder.ToList();
+            for (int i = 0; i < order.ProductSet.Count; i++)
+            {
+                _dbContext.Entry(oldProductOrders[i]).CurrentValues.SetValues(newProductOrders[i]);
+            }
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
+        }
+
+        public Order GetLatestOrder(int customerId, int locationId)
+        {
+            var order = _dbContext.Order.OrderByDescending(o => o.LastModified)
+                .Where(o => o.BuyerId == customerId && o.SellerId == locationId)
+                .Include(o => o.Buyer)
+                .Include(o => o.Seller)
+                .Include(o => o.ProductOrder)
+                .ThenInclude(po => po.Product).FirstOrDefault();
+            if (order == null)
+            {
+                throw new KeyNotFoundException("Customer {customer.FullName} has no orders at {location.Name} store");
+            }
+            return Mapper.Map(order);
         }
     }
 }

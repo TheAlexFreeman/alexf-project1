@@ -70,7 +70,7 @@ namespace WebStore.App.Controllers
                 {
                     return View(viewModel);
                 }
-                var newLocation = viewModel.AsLocation;
+                var newLocation = viewModel.AsLocation();
                 _locationRepo.AddLocation(newLocation);
                 _locationRepo.Save();
                 return RedirectToAction(nameof(Select));
@@ -108,7 +108,7 @@ namespace WebStore.App.Controllers
                 {
                     return View(viewModel);
                 }
-                var newLocation = viewModel.AsLocation;
+                var newLocation = viewModel.AsLocation();
                 _locationRepo.EditLocation(id, newLocation);
                 _locationRepo.Save();
                 return RedirectToAction(nameof(Select));

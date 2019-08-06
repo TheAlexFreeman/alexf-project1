@@ -194,10 +194,10 @@ namespace WebStore.Data
         public static Order Map(Entities.Order order)
         {
             var result = new Order(Map(order.Buyer), Map(order.Seller), order.Start, order.LastModified, order.IsOpen, Map(order.ProductOrder), order.Id);
-            foreach (var productOrder in order.ProductOrder)
-            {
-                result.AddProduct(Map(productOrder.Product), productOrder.Quantity);
-            }
+            //foreach (var productOrder in order.ProductOrder)
+            //{
+            //    result.AddProduct(Map(productOrder.Product), productOrder.Quantity);
+            //}
             return result;
         }
         /// <summary>

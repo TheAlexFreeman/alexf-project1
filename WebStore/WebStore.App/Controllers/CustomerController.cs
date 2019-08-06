@@ -16,11 +16,13 @@ namespace WebStore.App.Controllers
         private readonly ICustomerRepository _customerRepo;
         private readonly ILocationRepository _locationRepo;
         private readonly IOrderRepository _orderRepo;
-        public CustomerController(ICustomerRepository customerRepo, ILocationRepository locationRepo, IOrderRepository orderRepo)
+        private readonly IProductRepository _productRepo;
+        public CustomerController(ICustomerRepository customerRepo, ILocationRepository locationRepo, IOrderRepository orderRepo, IProductRepository productRepo)
         {
             _customerRepo = customerRepo ?? throw new ArgumentNullException("Customer repository cannot be null");
             _locationRepo = locationRepo ?? throw new ArgumentNullException(nameof(locationRepo));
             _orderRepo = orderRepo ?? throw new ArgumentNullException(nameof(orderRepo));
+            _productRepo = productRepo ?? throw new ArgumentNullException(nameof(productRepo));
         }
 
         [HttpGet]
@@ -200,11 +202,12 @@ namespace WebStore.App.Controllers
         {
             try
             {
-                var seller = new LocationViewModel(_locationRepo.GetLocationByName(storeName));
-                var buyer = new CustomerViewModel(_customerRepo.GetCustomerById(id));
-                var order = new Order(buyer.AsCustomer, seller.AsLocation);
+                var seller = _locationRepo.GetLocationByName(storeName);
+                var buyer = _customerRepo.GetCustomerById(id);
+                var order = new Order(buyer, seller, new Dictionary<Product, int>(seller.Products.Select(p => new KeyValuePair<Product, int>(p, 0))));
                 _orderRepo.AddOrder(order);
                 _orderRepo.Save();
+                order = _orderRepo.GetLatestOrder(id, seller.Id);
                 return View(new OrderViewModel(order));
             }
             catch (KeyNotFoundException)
@@ -214,16 +217,28 @@ namespace WebStore.App.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Order(OrderViewModel viewModel)
+        public ActionResult Order(int id, int storeId, IFormCollection formCollection)
         {
-            if (!ModelState.IsValid)
+            var values = new Dictionary<string, string>();
+            
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(viewModel);
+            //}
+            var order = _orderRepo.GetLatestOrder(id, storeId);
+            foreach (Product product in order.ProductSet)
             {
-                return View(viewModel);
+                if (formCollection.ContainsKey(product.Name))
+                {
+                    order.AddProduct(product, int.Parse(formCollection[product.Name]));
+                }
             }
-            var order = viewModel.AsOrder;
+            //new Dictionary<Product, int>(viewModel.Prices.Select(kvp =>
+            //         new KeyValuePair<Product, int>(new Product(kvp.Key, kvp.Value), viewModel.Quantity(kvp.Key)))));
+            order.Close();
             _orderRepo.UpdateOrder(order);
             _orderRepo.Save();
-            return RedirectToAction(nameof(OrderHistory), new { id = viewModel.Buyer.Id });
+            return RedirectToAction(nameof(OrderHistory), new { id = id });
         }
 
         [HttpGet]
@@ -232,7 +247,7 @@ namespace WebStore.App.Controllers
             try
             {
                 var orders = _orderRepo.GetOrderHistoryByCustomer(id);
-                return View(orders.Select(o => new OrderViewModel(o)));
+                return View(orders.Where(o => o.Id > 19).Select(o => new OrderViewModel(o)));
             }
             catch
             {

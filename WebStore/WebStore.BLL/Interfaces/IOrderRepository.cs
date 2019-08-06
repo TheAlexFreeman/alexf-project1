@@ -17,5 +17,6 @@ namespace WebStore.BLL.Interfaces
         void AddOrder(Order order);
         void UpdateOrder(Order order);
 
+        Order GetLatestOrder(int customerId, int locationId);
     }
 }

@@ -18,70 +18,16 @@ namespace WebStore.App.Models
             LastModified = order.LastModified;
             IsOpen = order.IsOpen;
             Products = new Dictionary<string, int>();
-            foreach(Product product in order.Seller.Products)
+            Prices = new Dictionary<string, double>();
+
+            foreach (Product product in order.ProductSet)
             {
                 Products.Add(product.Name, order.Quantity(product));
+                Prices.Add(product.Name, product.Price);
             }
         }
 
         public OrderViewModel() { }
-
-        //public OrderViewModel() { Products = new Dictionary<string, int>(); Start = DateTime.Now; LastModified = Start; IsOpen = true; }
-        ///// <summary>
-        ///// Creates a new order with buyer, seller, and existing set of products
-        ///// </summary>
-        ///// <param name="buyer">CustomerViewModel buying this order</param>
-        ///// <param name="seller">LocationViewModel where this order was sold</param>
-        ///// <param name="products">Dictionary mapping products to quantities in this order</param>
-        ///// <param name="id">Database ID of order</param>
-        //public OrderViewModel(CustomerViewModel buyer, LocationViewModel seller, IDictionary<ProductViewModel, int> products = null, int id = 0)
-        //{
-        //    Id = id;
-        //    Buyer = buyer ?? throw new ArgumentNullException();
-        //    Seller = seller ?? throw new ArgumentNullException();
-        //    if (products == null)
-        //    {
-        //        Products = new Dictionary<string, int>();
-        //        Prices = new Dictionary<string, double>();
-        //    } else
-        //    {
-        //        Products = new Dictionary<string, int>(products.Select(kvp => new KeyValuePair<string, int>(kvp.Key.Name, kvp.Value)));
-        //        Prices = new Dictionary<string, double>(products.Select(kvp => new KeyValuePair<string, double>(kvp.Key.Name, kvp.Key.Price)));
-        //    }
-        //    Start = DateTime.Now;
-        //    LastModified = Start;
-        //}
-        ///// <summary>
-        ///// Creates a new order with buyer, seller, and empty product set
-        ///// </summary>
-        ///// <param name="buyer">CustomerViewModel who placed this order</param>
-        ///// <param name="seller">LocationViewModel where this order was fulfilled</param>
-        ///// <param name="time">Date and time this order was placed</param>
-        ///// <param name="id">Database ID of order</param>
-        //public OrderViewModel(CustomerViewModel buyer, LocationViewModel seller, DateTime start, DateTime? lastModified = null, IDictionary<ProductViewModel, int> products = null, int id = 0)
-        //{
-        //    Id = id;
-        //    Buyer = buyer ?? throw new ArgumentNullException();
-        //    Seller = seller ?? throw new ArgumentNullException();
-        //    if (products == null)
-        //    {
-        //        Products = new Dictionary<string, int>();
-        //        Prices = new Dictionary<string, double>();
-        //    }
-        //    else
-        //    {
-        //        Products = new Dictionary<string, int>(products.Select(kvp => new KeyValuePair<string, int>(kvp.Key.Name, kvp.Value)));
-        //        Prices = new Dictionary<string, double>(products.Select(kvp => new KeyValuePair<string, double>(kvp.Key.Name, kvp.Key.Price)));
-        //    }
-        //    Start = start;
-        //    if (lastModified == null || lastModified < start)
-        //    {
-        //        LastModified = start;
-        //    } else
-        //    {
-        //        LastModified = (DateTime)lastModified;
-        //    }
-        //}
 
 
         /// <summary>
@@ -105,11 +51,11 @@ namespace WebStore.App.Models
         /// <summary>
         /// Names of products sold, with quantity of each
         /// </summary>
-        private readonly IDictionary<string, int> Products;
+        public readonly IDictionary<string, int> Products;
         /// <summary>
         /// Prices of all products sold, indexed by product name 
         /// </summary>
-        public IDictionary<string, double> Prices => Seller?.Prices;
+        public IDictionary<string, double> Prices;
         /// <summary>
         /// Gets quantity of given product currently in order
         /// </summary>
@@ -134,12 +80,13 @@ namespace WebStore.App.Models
         {
             get
             {
-                double total = 0.0;
-                foreach (var product in Products.Keys)
-                {
-                    total += Prices[product] * Products[product];
-                }
-                return total;
+                return Products.Select(kvp => kvp.Value * Prices[kvp.Key]).Sum();
+                //double total = 0.0;
+                //foreach (var product in Products.Keys)
+                //{
+                //    total += Prices[product] * Products[product];
+                //}
+                //return total;
             }
         }
         
