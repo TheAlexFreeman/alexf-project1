@@ -92,7 +92,7 @@ namespace WebStore.App.Controllers
         {
             try
             {
-                var customers = _customerRepo.SearchCustomersByName(search);
+                var customers = _customerRepo.GetCustomers(search);
                 return View(customers.Select(c => new CustomerViewModel(c)));
             }
             catch

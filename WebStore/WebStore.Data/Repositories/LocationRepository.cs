@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,14 @@ namespace WebStore.Data.Repositories
     public class LocationRepository : Repository, ILocationRepository
     {
         private readonly DbSet<Entities.Location> _locations;
+        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         public LocationRepository(Entities.StoreDBContext dbContext) : base(dbContext)
         {
             _locations = dbContext.Location;
         }
-        public IEnumerable<Location> GetLocations()
+        public IEnumerable<Location> GetLocations(string search = "")
         {
+            _logger.Info($"Getting locations with name containing {search}");
             return _locations.Select(Mapper.Map);
         }
         public Location GetLocationById(int id)
@@ -26,8 +29,16 @@ namespace WebStore.Data.Repositories
                 .ThenInclude(pl => pl.Product)
                 .Include(l => l.InventoryItem)
                 .ThenInclude(ii => ii.Item)
-                .FirstOrDefault(l => l.Id == id) ?? throw new KeyNotFoundException($"No location with ID {id} exists in database");
-            return Mapper.Map(location);
+                .FirstOrDefault(l => l.Id == id);
+            if (location == null)
+            {
+                _logger.Error(new KeyNotFoundException(), $"No location with ID {id} exists in database");
+                throw new KeyNotFoundException($"No location with ID {id} exists in database");
+            }else
+            {
+                _logger.Info($"Getting location with ID {id} from database");
+                return Mapper.Map(location);
+            }            
         }
         public Location GetLocationByName(string name)
         {
@@ -36,8 +47,17 @@ namespace WebStore.Data.Repositories
                .ThenInclude(pl => pl.Product)
                .Include(l => l.InventoryItem)
                .ThenInclude(ii => ii.Item)
-               .FirstOrDefault(l => l.Name == name) ?? throw new KeyNotFoundException($"No location with name '{name}' exists in database");
-            return Mapper.Map(location);
+               .FirstOrDefault(l => l.Name == name);
+            if (location == null)
+            {
+                _logger.Error($"No location with name {name} exists in database");
+                throw new KeyNotFoundException($"No location with name {name} exists in database");
+            }
+            else
+            {
+                _logger.Info($"Getting location with name {name} from database");
+                return Mapper.Map(location);
+            }
         }
 
 
@@ -45,10 +65,13 @@ namespace WebStore.Data.Repositories
         {
             if (_locations.Any(l => l.Id == id))
             {
+                _logger.Info($"Removing location with ID {id}");
                 _locations.Remove(_locations.Find(id));
             } else
             {
-                throw new KeyNotFoundException("No location with ID {id} exists in database");
+                var ex = new KeyNotFoundException($"No location with ID {id} exists in database");
+                _logger.Error(ex, ex.Message);
+                throw ex;
             }
         }
 
@@ -58,11 +81,14 @@ namespace WebStore.Data.Repositories
             {
                 var currentEntity = _locations.Find(id);
                 var newEntity = Mapper.Map(newLocation);
+                _logger.Info($"Updating values for location with ID {id}");
                 _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
             }
             else
             {
-                throw new KeyNotFoundException("No location with ID {id} exists in database");
+                var ex = new KeyNotFoundException($"No location with ID {id} exists in database");
+                _logger.Error(ex, ex.Message);
+                throw ex;
             }
         }
 
@@ -70,17 +96,24 @@ namespace WebStore.Data.Repositories
         {
             if (newLocation == null)
             {
-                throw new ArgumentNullException("Cannot add null location to database");
+                var argEx = new ArgumentNullException("Cannot add null location to database");
+                _logger.Error(argEx, argEx.Message);
+                throw argEx;
             }
             if (_locations.Any(l => l.Id == newLocation.Id))
             {
-                throw new KeyNotFoundException("Location with ID {id} already exists in database");
+                _logger.Warn($"Location with ID {newLocation.Id} already exists in database: ignoring");
+            } else
+            {
+                _logger.Info($"Adding new location {newLocation.Name} to database");
+                _locations.Add(Mapper.Map(newLocation));
             }
-            _locations.Add(Mapper.Map(newLocation));
+            
         }
 
         public IEnumerable<Order> GetOrderHistory(int id)
         {
+            _logger.Info($"Getting order history for location with ID {id}");
             return _dbContext.Order
                 .Where(o => o.SellerId == id)
                 .Include(o => o.Buyer)

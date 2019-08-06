@@ -6,7 +6,7 @@ namespace WebStore.BLL.Interfaces
 {
     public interface ILocationRepository
     {
-        IEnumerable<Location> GetLocations();
+        IEnumerable<Location> GetLocations(string search);
         Location GetLocationById(int id);
         Location GetLocationByName(string name);
         void Save();

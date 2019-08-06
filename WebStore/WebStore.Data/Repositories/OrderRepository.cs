@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace WebStore.Data.Repositories
 {
     public class OrderRepository : Repository, IOrderRepository
     {
+        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
         public OrderRepository(Entities.StoreDBContext dbContext) : base(dbContext) { }
 
         public IEnumerable<Order> GetOrders()
@@ -28,9 +31,17 @@ namespace WebStore.Data.Repositories
                 .Include(o => o.Seller)
                 .Include(o => o.ProductOrder)
                 .ThenInclude(po => po.Product)
-                .FirstOrDefault(o => o.Id == id)
-                ?? throw new KeyNotFoundException($"No order with ID {id} exists in database");
-            return Mapper.Map(order);
+                .FirstOrDefault(o => o.Id == id);
+            if (order == null)
+            {
+                var ex = new KeyNotFoundException($"No order with ID {id} exists in database");
+                _logger.Error(ex, ex.Message);
+                throw ex;
+            } else
+            {
+                _logger.Info("Getting order with ID {id}");
+                return Mapper.Map(order);
+            }
         }
 
         public IEnumerable<Order> GetOrderHistoryByCustomer(int customerId)
@@ -91,18 +102,24 @@ namespace WebStore.Data.Repositories
         {
             if (order.Id != 0)
             {
-                throw new InvalidOperationException($"Order with ID {order.Id} already exists in database");
+                _logger.Warn($"Order with ID {order.Id} already exists in database: ignoring");
+            } else
+            {
+                var entity = Mapper.Map(order);
+                entity.Id = 0;
+                _logger.Info($"Adding new order to database");
+                _dbContext.Order.Add(entity);
             }
-            var entity = Mapper.Map(order);
-            entity.Id = 0;
-            _dbContext.Order.Add(entity);
+            
         }
         
         public void UpdateOrder(Order order)
         {
             if (order.Id == 0)
             {
-                throw new KeyNotFoundException($"Order not found in database");
+                var ex = new KeyNotFoundException($"Order not found in database");
+                _logger.Error(ex, ex.Message);
+                throw ex;
             }
             var currentEntity = _dbContext.Order.Find(order.Id);
             var newEntity = Mapper.Map(order);
@@ -110,8 +127,10 @@ namespace WebStore.Data.Repositories
             var newProductOrders = newEntity.ProductOrder.ToList();
             for (int i = 0; i < order.ProductSet.Count; i++)
             {
+                _logger.Info($"Updating quantity of {oldProductOrders[i].Product.Name} in order #{order.Id}");
                 _dbContext.Entry(oldProductOrders[i]).CurrentValues.SetValues(newProductOrders[i]);
             }
+            _logger.Info($"Updating info for order #{order.Id}");
             _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
         }
 
@@ -125,8 +144,11 @@ namespace WebStore.Data.Repositories
                 .ThenInclude(po => po.Product).FirstOrDefault();
             if (order == null)
             {
-                throw new KeyNotFoundException("Customer {customer.FullName} has no orders at {location.Name} store");
+                var ex = new KeyNotFoundException("Customer {customer.FullName} has no orders at {location.Name} store");
+                _logger.Error(ex, ex.Message);
+                throw ex;
             }
+            _logger.Info($"Getting latest order for customer #{customerId} at location #{locationId}");
             return Mapper.Map(order);
         }
     }

@@ -34,7 +34,7 @@
     {
     <div class="form-group">
         <label asp-for="@kvp.Key" class="control-label">@kvp.Key : $@Model.Seller.Prices[kvp.Key]</label>
-        <input name="@kvp.Key" type="number" class="form-control" />
+        <input name="@kvp.Key" type="number" min="0" max="@((int)(100/Model.Seller.Prices[kvp.Key]))" placeholder="@kvp.Value" class="form-control" />
         <span asp-validation-for="@kvp.Key" class="text-danger"></span>
     </div>
     }

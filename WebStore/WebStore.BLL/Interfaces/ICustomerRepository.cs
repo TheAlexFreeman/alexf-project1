@@ -6,11 +6,11 @@ namespace WebStore.BLL.Interfaces
 {
     public interface ICustomerRepository
     {
-        IEnumerable<Customer> GetCustomers();
+        IEnumerable<Customer> GetCustomers(string search);
         Customer GetCustomerById(int id);
         Customer GetCustomerByName(string first, string last);
-        IEnumerable<Customer> SearchCustomersByName(string search);
-        IEnumerable<Customer> GetCustomersByLocation(int locationId);
+        //IEnumerable<Customer> SearchCustomersByName(string search);
+        //IEnumerable<Customer> GetCustomersByLocation(int locationId);
         void Save();
 
         void AddCustomer(Customer customer);

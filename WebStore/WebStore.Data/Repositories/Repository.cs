@@ -11,7 +11,7 @@ namespace WebStore.Data.Repositories
     /// <summary>
     /// Abstract class to store common repository functionality
     /// </summary>
-    public abstract class Repository //<T> where T : class //: IRepository<T> where T : class, ISearchable
+    public abstract class Repository
     {
         protected readonly StoreDBContext _dbContext;
 

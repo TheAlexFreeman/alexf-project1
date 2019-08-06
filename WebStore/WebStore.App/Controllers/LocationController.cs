@@ -27,8 +27,7 @@ namespace WebStore.App.Controllers
         // GET: Location
         public ActionResult Select([FromQuery] string search = "")
         {
-            IEnumerable<LocationViewModel> viewModel = _locationRepo.GetLocations()
-                .Where(l => l.Name.Contains(search))
+            IEnumerable<LocationViewModel> viewModel = _locationRepo.GetLocations(search)
                 .Select(l => new LocationViewModel(l));
             return View(viewModel);
         }
