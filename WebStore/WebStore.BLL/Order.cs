@@ -148,7 +148,10 @@ namespace WebStore.BLL
                 Inventory totals = new Inventory();
                 foreach (Product product in Products.Keys)
                 {
-                    totals.AddInventory(product.ItemsNeeded(Quantity(product)));
+                    if (Quantity(product) != 0)
+                    {
+                        totals.AddInventory(product.ItemsNeeded(Quantity(product)));
+                    }
                 }
                 return totals;
             }

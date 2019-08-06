@@ -14,7 +14,6 @@ namespace WebStore.BLL.Interfaces
         void EditLocation(int id, Location newLocation);
         void AddLocation(Location newLocation);
         IEnumerable<Order> GetOrderHistory(int id);
-        //Location SearchLocationByName(string search);
-        //Location SearchLocationByProductName(string search);
+        
     }
 }

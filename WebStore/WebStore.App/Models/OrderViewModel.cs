@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -29,7 +30,7 @@ namespace WebStore.App.Models
 
         public OrderViewModel() { }
 
-
+        [Display(Name = "Order #")]
         /// <summary>
         /// Database ID of this order
         /// </summary>
@@ -45,8 +46,11 @@ namespace WebStore.App.Models
         /// <summary>
         /// Date and time order was placed
         /// </summary>
+        [Display(Name = "Order Started")]
         public DateTime Start { get; }
+        [Display(Name = "Last Modified")]
         public DateTime LastModified { get; set; }
+        [Display(Name = "Incomplete")]
         public bool IsOpen { get; set; }
         /// <summary>
         /// Names of products sold, with quantity of each

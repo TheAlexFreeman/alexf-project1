@@ -67,11 +67,11 @@ namespace WebStore.BLL
             {
                 throw new ArgumentNullException(nameof(item), "Cannot look up null value in inventory.");
             }
-            if (!_inventory.ContainsKey(item))
+            if (!_inventory.Keys.Any(i => i.Name == item.Name))
             {
                 return 0;
             }
-            return _inventory[item];
+            return _inventory[_inventory.Keys.First(i => i.Name == item.Name)];
         }
         /// <summary>
         /// Adds the specified quantity of a particular item to inventory,
@@ -90,15 +90,15 @@ namespace WebStore.BLL
             {
                 throw new ArgumentOutOfRangeException(nameof(toAdd), "Cannot add negative number of items to inventory.");
             }
-            if (_inventory.ContainsKey(item))
+            if (_inventory.Keys.Any(i => i.Name == item.Name))
             {
-                _inventory[item] += toAdd;
+                _inventory[_inventory.Keys.First(i => i.Name == item.Name)] += toAdd;
             }
             else
             {
                 _inventory.Add(item, toAdd);
             }
-            return _inventory[item];
+            return _inventory[_inventory.Keys.First(i => i.Name == item.Name)];
         }
         public int AddItem(Item item)
         {
@@ -193,7 +193,7 @@ namespace WebStore.BLL
             {
                 throw new ArgumentOutOfRangeException("Cannot subtract negative number of items from inventory.");
             }
-            if (!_inventory.ContainsKey(item))
+            if (!_inventory.Keys.Any(i => i.Name == item.Name))
             {
                 throw new KeyNotFoundException("Cannot subtract nonexistent item from inventory");
             }
@@ -201,7 +201,7 @@ namespace WebStore.BLL
             {
                 return false;
             }
-            _inventory[item] -= toSubtract;
+            _inventory[_inventory.Keys.First(i => i.Name == item.Name)] -= toSubtract;
             return true;
         }
         public bool SubtractItem(Item item)
@@ -212,17 +212,28 @@ namespace WebStore.BLL
         {
             return item.Cost * Count(item);
         }
-        
-        public bool MakeProduct(Product product, int quantity)
+
+        public bool SubtractInventory(Inventory toSubtract)
         {
-            // Check availability before subtracting from stock
-            if (!ProductAvailable(product, quantity))
+            if (!HasEnough(toSubtract))
             {
                 return false;
             }
-            foreach(Item item in product.Items)
+            foreach(Item item in toSubtract.Items)
             {
-                SubtractItem(item, product.Count(item) * quantity);
+                SubtractItem(item, toSubtract.Count(item));
+            }
+            return true;
+        }
+
+        public bool HasEnough(Inventory inv)
+        {
+            foreach(Item item in inv.Items)
+            {
+                if (!ItemAvailable(item, inv.Count(item)))
+                {
+                    return false;
+                }
             }
             return true;
         }

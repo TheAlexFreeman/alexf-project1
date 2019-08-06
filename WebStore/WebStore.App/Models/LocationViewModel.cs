@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -18,11 +19,12 @@ namespace WebStore.App.Models
         }
 
         public LocationViewModel() { }
-        
 
+        [Display(Name = "ID")]
         public int Id { get; set; }
+        [Display(Name = "Store Name")]
         public string Name { get; set; }
-        private readonly Dictionary<string, int> Inv;
+        public readonly Dictionary<string, int> Inv;
         public readonly Dictionary<string, double> Prices;
 
         public int Count(string item) { return Inv[item]; }

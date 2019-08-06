@@ -3,12 +3,13 @@
 @{
     ViewData["Title"] = "Details";
     TempData["CustomerID"] = Model.Id;
+    TempData["CustomerName"] = Model.FullName;
 }
 
 <h1>Details</h1>
 
 <div>
-    <h4>CustomerViewModel</h4>
+    <h4>@Model.FullName</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -30,12 +31,6 @@
             @Html.DisplayFor(model => model.LastName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FullName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FullName)
-        </dd>
-        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.DefaultStore)
         </dt>
         <dd class = "col-sm-10">
@@ -49,7 +44,7 @@
     {
         @Html.ActionLink($"Order from default store ({Model.DefaultStore})", "Order", "Customer", new { id = Model.Id, storeName = Model.DefaultStore }) @: |
     }
-    @Html.ActionLink("Select a store", "Select", "Location") |
-
-    <a asp-action="Index">Back to List</a>
+    @Html.ActionLink("Select a Store", "Select", "Location") |
+    @Html.ActionLink("My Order History", "OrderHistory", "Customer", new { id= Model.Id }) |
+    <a asp-action="Index">Back to Login</a>
 </div>

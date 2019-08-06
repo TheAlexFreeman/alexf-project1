@@ -31,6 +31,8 @@ namespace WebStore.Data.Repositories
                 .Include(o => o.Seller)
                 .Include(o => o.ProductOrder)
                 .ThenInclude(po => po.Product)
+                .ThenInclude(p => p.ProductItem)
+                .ThenInclude(pi => pi.Item)
                 .FirstOrDefault(o => o.Id == id);
             if (order == null)
             {
@@ -74,6 +76,8 @@ namespace WebStore.Data.Repositories
                 .Include(o => o.Seller)
                 .Include(o => o.ProductOrder)
                 .ThenInclude(po => po.Product)
+                .ThenInclude(p => p.ProductItem)
+                .ThenInclude(pi => pi.Item)
                 .Select(Mapper.Map);
         }
         public IEnumerable<Order> GetOrdersInPriceRange(double min, double max)
@@ -83,6 +87,8 @@ namespace WebStore.Data.Repositories
                 .Include(o => o.Seller)
                 .Include(o => o.ProductOrder)
                 .ThenInclude(po => po.Product)
+                .ThenInclude(p => p.ProductItem)
+                .ThenInclude(pi => pi.Item)
                 .Select(Mapper.Map)
                 .Where(o => o.Total >= min && o.Total <= max);
         }
@@ -95,6 +101,8 @@ namespace WebStore.Data.Repositories
                 .Include(o => o.Seller)
                 .Include(o => o.ProductOrder)
                 .ThenInclude(po => po.Product)
+                .ThenInclude(p => p.ProductItem)
+                .ThenInclude(pi => pi.Item)
                 .Select(Mapper.Map);
         }
 
@@ -141,7 +149,9 @@ namespace WebStore.Data.Repositories
                 .Include(o => o.Buyer)
                 .Include(o => o.Seller)
                 .Include(o => o.ProductOrder)
-                .ThenInclude(po => po.Product).FirstOrDefault();
+                .ThenInclude(po => po.Product)
+                .ThenInclude(p => p.ProductItem)
+                .ThenInclude(pi => pi.Item).FirstOrDefault();
             if (order == null)
             {
                 var ex = new KeyNotFoundException("Customer {customer.FullName} has no orders at {location.Name} store");

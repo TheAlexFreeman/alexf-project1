@@ -107,6 +107,8 @@ namespace WebStore.Data.Repositories
                 .Include(o => o.Seller)
                 .Include(o => o.ProductOrder)
                 .ThenInclude(po => po.Product)
+                .ThenInclude(p => p.ProductItem)
+                .ThenInclude(pi => pi.Item)
                 .Select(Mapper.Map);
         }
 

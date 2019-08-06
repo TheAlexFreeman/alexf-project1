@@ -34,7 +34,7 @@ namespace WebStore.App.Controllers
 
         [HttpGet]
         // GET: Location/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Inventory(int id)
         {
             BLL.Location location;
             try
@@ -151,34 +151,18 @@ namespace WebStore.App.Controllers
             }
         }
 
-        //[HttpGet]
-        //public ActionResult Order(string name, string customer)
-        //{
-        //    try
-        //    {
-        //        var location = new LocationViewModel(_locationRepo.GetLocationByName(name));
-        //        var customerName = customer.Split();
-        //        var buyer = new CustomerViewModel(_customerRepo.GetCustomerByName(customerName[0], customerName[1]));
-        //        var orderViewModel = new OrderViewModel(buyer, location);
-        //        _orderRepo.AddOrder(orderViewModel.AsOrder);
-        //        _orderRepo.Save();
-        //        return View(new OrderViewModel(buyer, location));
-        //    }
-        //    catch (KeyNotFoundException)
-        //    {
-        //        return RedirectToAction(nameof(Select));
-        //    }
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Order(OrderViewModel viewModel)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(viewModel);
-        //    }
-        //    var order = viewModel.AsOrder;
-
-        //}
+        [HttpGet]
+        public ActionResult OrderHistory(int id)
+        {
+            try
+            {
+                var orders = _orderRepo.GetOrderHistoryByLocation(id);
+                return View(orders.Where(o => o.Id > 19).Select(o => new OrderViewModel(o)));
+            }
+            catch
+            {
+                return View(nameof(Select), new { id });
+            }
+        }
     }
 }

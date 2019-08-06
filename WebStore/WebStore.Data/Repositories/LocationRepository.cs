@@ -27,6 +27,8 @@ namespace WebStore.Data.Repositories
             var location = _locations
                 .Include(l => l.ProductLocation)
                 .ThenInclude(pl => pl.Product)
+                .ThenInclude(p => p.ProductItem)
+                .ThenInclude(pi => pi.Item)
                 .Include(l => l.InventoryItem)
                 .ThenInclude(ii => ii.Item)
                 .FirstOrDefault(l => l.Id == id);
@@ -45,6 +47,8 @@ namespace WebStore.Data.Repositories
             var location = _locations
                .Include(l => l.ProductLocation)
                .ThenInclude(pl => pl.Product)
+               .ThenInclude(p => p.ProductItem)
+               .ThenInclude(pi => pi.Item)
                .Include(l => l.InventoryItem)
                .ThenInclude(ii => ii.Item)
                .FirstOrDefault(l => l.Name == name);
@@ -79,9 +83,17 @@ namespace WebStore.Data.Repositories
         {
             if (_locations.Any(l => l.Id == id))
             {
+                newLocation.Id = id;
                 var currentEntity = _locations.Find(id);
                 var newEntity = Mapper.Map(newLocation);
-                _logger.Info($"Updating values for location with ID {id}");
+                var oldInventory = currentEntity.InventoryItem.ToList();
+                var newInventory = newEntity.InventoryItem.ToList();
+                for (int i = 0; i < oldInventory.Count; i++)
+                {
+                    _logger.Info($"Updating quantity of {oldInventory[i].Item.Name} at {newLocation.Name} store");
+                    _dbContext.Entry(oldInventory[i]).CurrentValues.SetValues(newInventory[i]);
+                }
+                _logger.Info($"Updating values for location with ID {newLocation.Id}");
                 _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
             }
             else
@@ -119,6 +131,8 @@ namespace WebStore.Data.Repositories
                 .Include(o => o.Buyer)
                 .Include(o => o.ProductOrder)
                 .ThenInclude(po => po.Product)
+                .ThenInclude(p => p.ProductItem)
+                .ThenInclude(pi => pi.Item)
                 .Select(Mapper.Map);
         }
     }

@@ -150,3 +150,45 @@ CREATE TABLE Store.ProductLocations (
 		ON DELETE CASCADE
 );
 GO
+INSERT INTO Store.ProductLocation(LocationID, ProductID) VALUES
+	((SELECT ID FROM Store.Location WHERE [Name] = 'Arlington'),
+		(SELECT ID FROM Store.Item WHERE [Name] = 'Cookie')),
+	((SELECT ID FROM Store.Location WHERE [Name] = 'Arlington'),
+		(SELECT ID FROM Store.Item WHERE [Name] = 'Brownie'));
+
+INSERT INTO Store.InventoryItem(LocationID, ItemID, Quantity) VALUES
+	(
+		(SELECT ID FROM Store.Location WHERE [Name] = 'Arlington'),
+		(SELECT ID FROM Store.Item WHERE [Name] = 'Water Bottle'),
+		100
+	);
+	(
+		(SELECT ID FROM Store.Location WHERE [Name] = 'Berkeley'),
+		(SELECT ID FROM Store.Item WHERE [Name] = 'Brownie'),
+		100
+	),
+	(
+		(SELECT ID FROM Store.Location WHERE [Name] = 'Las Vegas'),
+		(SELECT ID FROM Store.Item WHERE [Name] = 'Cookie'),
+		100
+	),
+	(
+		(SELECT ID FROM Store.Location WHERE [Name] = 'Las Vegas'),
+		(SELECT ID FROM Store.Item WHERE [Name] = 'Brownie'),
+		100
+	),
+	(
+		(SELECT ID FROM Store.Location WHERE [Name] = 'Las Vegas'),
+		(SELECT ID FROM Store.Item WHERE [Name] = 'Water Bottle'),
+		1000
+	),
+	(
+		(SELECT ID FROM Store.Location WHERE [Name] = 'Arlington'),
+		(SELECT ID FROM Store.Item WHERE [Name] = 'Cookie'),
+		100
+	),
+	(
+		(SELECT ID FROM Store.Location WHERE [Name] = 'Arlington'),
+		(SELECT ID FROM Store.Item WHERE [Name] = 'Brownie'),
+		100
+	);

@@ -228,26 +228,33 @@ namespace WebStore.App.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Order(int id, int storeId, IFormCollection formCollection)
         {
-            var values = new Dictionary<string, string>();
-            
             //if (!ModelState.IsValid)
             //{
             //    return View(viewModel);
             //}
+            var location = _locationRepo.GetLocationById(storeId);
             var order = _orderRepo.GetLatestOrder(id, storeId);
             foreach (Product product in order.ProductSet)
             {
                 if (formCollection.ContainsKey(product.Name) && formCollection[product.Name] != "")
                 {
-                    order.AddProduct(product, int.Parse(formCollection[product.Name]));
+                    int.TryParse(formCollection[product.Name], out int quantity);
+                    order.AddProduct(product, quantity);
                 }
             }
-            //new Dictionary<Product, int>(viewModel.Prices.Select(kvp =>
-            //         new KeyValuePair<Product, int>(new Product(kvp.Key, kvp.Value), viewModel.Quantity(kvp.Key)))));
-            order.Close();
-            _orderRepo.UpdateOrder(order);
-            _orderRepo.Save();
-            return RedirectToAction(nameof(OrderHistory), new { id = id });
+            var orderSold = location.FulfillOrder(order);
+            if (orderSold)
+            {
+                _locationRepo.EditLocation(location.Id, location);
+                order.Close();
+                _orderRepo.UpdateOrder(order);
+                _orderRepo.Save();
+                return RedirectToAction(nameof(OrderHistory), new { id = id });
+            } else
+            {
+                return View("Error", new ErrorViewModel { StoreName = location.Name, Message = "Insufficient inventory to fulfill order." });
+            }
+            
         }
 
         [HttpGet]

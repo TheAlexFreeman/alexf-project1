@@ -62,6 +62,18 @@ namespace WebStore.BLL
         {
             return Inv.SubtractItem(item, toSubtract);
         }
-        
+        public bool SubtractInventory(Inventory toSubtract)
+        {
+            return Inv.SubtractInventory(toSubtract);
+        }
+
+        public bool FulfillOrder(Order order)
+        {
+            if (!Inv.HasEnough(order.ItemsNeeded))
+            {
+                return false;
+            }
+            return SubtractInventory(order.ItemsNeeded);
+        }
     }
 }

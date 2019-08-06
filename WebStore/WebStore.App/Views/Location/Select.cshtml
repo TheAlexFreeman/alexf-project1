@@ -4,10 +4,11 @@
     ViewData["Title"] = "Select";
 }
 
-<h1>Select</h1>
+<h1>Select a Location</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <h3>New order for @TempData.Peek("CustomerName")</h3>
+    <a asp-action="Index", asp-controller="Customer">Switch User</a>
 </p>
 <table class="table">
     <thead>
@@ -25,10 +26,10 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.ActionLink("Place Order", "Order", "Customer", new { id = TempData["CustomerID"], storeName=item.Name })
-                @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+                @Html.ActionLink("Place Order", "Order", "Customer", new { id = TempData.Peek("CustomerID"), storeName = item.Name }) |
+                @Html.ActionLink("View Inventory", "Inventory", new { id = item.Id })
+                @*@Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
             </td>
         </tr>
 }

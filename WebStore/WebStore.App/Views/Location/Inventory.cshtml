@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebStore.App.Models.ItemViewModel>
+﻿@model WebStore.App.Models.LocationViewModel
 
 @{
     ViewData["Title"] = "Inventory";
@@ -6,42 +6,42 @@
 
 <h1>Inventory</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cost)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cost)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div>
+    <h4>Cinnaholic @Model.Name</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+    @foreach (string itemName in Model.Inv.Keys)
+    {
+        <dl class="row">
+            <dt class="col-sm-2">
+                Item Name
+            </dt>
+            <dd class="col-sm-10">
+                @itemName
+            </dd>
+            <dt class="col-sm-2">
+                Quantity
+            </dt>
+            <dd class="col-sm-10">
+                @Model.Inv[itemName]
+            </dd>
+        </dl>
+    }
+</div>
+<div>
+    @Html.ActionLink("Back to Store List", "Select", "Location") |
+    <a asp-action="Order" asp-controller="Customer" asp-route-id="@TempData.Peek("CustomerID")" asp-route-storeName="@Model.Name">Place Order</a>
+</div>

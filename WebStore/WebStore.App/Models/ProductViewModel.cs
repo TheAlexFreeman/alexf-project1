@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using WebStore.BLL;
@@ -17,9 +18,11 @@ namespace WebStore.App.Models
             InventoryCosts = new Dictionary<string, double>(product.Items.Select(i => new KeyValuePair<string, double>(i.Name, i.Cost)));
         }
         public ProductViewModel() { }
-        
+        [Display(Name = "ID")]
         public int Id { get; set; }
+        [Display(Name = "Product Name")]
         public string Name { get; set; }
+        [DisplayFormat(DataFormatString = "{0:#.##}")]
         public double Price { get; set; }
         private readonly Dictionary<string, int> Parts;
         private readonly Dictionary<string, double> InventoryCosts;

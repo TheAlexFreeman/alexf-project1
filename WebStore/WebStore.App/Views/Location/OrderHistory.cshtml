@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<WebStore.App.Models.OrderViewModel>
 
 @{
-    ViewData["Title"] = "OrderHistory";
+    ViewData["Title"] = "Order History";
 }
 
-<h1>Order History for @TempData.Peek("CustomerName")</h1>
+<h1>Order History for @Model.First().Seller.Name Cinnaholic</h1>
 
 <p>
-    <a asp-action="Details" asp-route-id="@TempData.Peek("CustomerID")">My Details</a>
+    <a asp-action="Select">Store List</a>
 </p>
 <table class="table">
     <thead>
@@ -16,7 +16,7 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                Store Location
+                Customer
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Start)
@@ -37,18 +37,13 @@
         </tr>
     </thead>
     <tbody>
-        @if  (!Model.Any(i => !i.IsOpen))
-        {
-            <p>You have not placed any orders yet.</p>
-        }
 @foreach (var item in Model.Where(i => !i.IsOpen)) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
-                @Html.ActionLink(item.Seller.Name, "Order", "Customer", new { id = item.Buyer.Id, storeName = item.Seller.Name })
-                @*@Html.DisplayFor(modelItem => item.Seller.Name)*@
+                @Html.DisplayFor(modelItem => item.Buyer.FullName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Start)
@@ -81,11 +76,6 @@
                     @Html.ActionLink("Change Order", "Order", new { id = item.Buyer.Id, storeName = item.Seller.Name })
                 }
             </td>
-            @*<td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>*@
         </tr>
 }
     </tbody>
