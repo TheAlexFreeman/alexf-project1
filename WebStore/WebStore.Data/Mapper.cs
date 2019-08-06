@@ -173,7 +173,7 @@ namespace WebStore.Data
                 Id = customer.Id,
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
-                DefaultStoreId = customer.DefaultStore.Id,
+                DefaultStoreId = customer.DefaultStore?.Id,
                 DefaultStore = Map(customer.DefaultStore)
             };
         }

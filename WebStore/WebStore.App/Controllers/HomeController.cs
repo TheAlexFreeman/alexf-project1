@@ -12,7 +12,7 @@ namespace WebStore.App.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Customer");
         }
 
         public IActionResult Privacy()

@@ -1,8 +1,41 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model WebStore.App.Models.CustomerViewModel
+
+
+@{
+    ViewData["Title"] = "Customer Login";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to Cinnaholic</h1>
+    <p>If you're a new customer, please enter your information here:</p>
+    <form asp-action="Enter" asp-controller="Customer">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="FirstName" class="control-label"></label>
+            <input asp-for="FirstName" class="form-control" />
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="LastName" class="control-label"></label>
+            <input asp-for="LastName" class="form-control" />
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="DefaultStore" class="control-label"></label>
+            <select asp-for="DefaultStore" asp-items="Model.StoreOptions" class="form-control"></select>
+            <span asp-validation-for="DefaultStore" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Enter" class="btn btn-primary" />
+        </div>
+    </form>
+    <hr />
+    <p>Returning customers, select your name from the list.</p>
+    <form asp-action="Details" asp-controller="Customer">
+        <div class="form-group">
+            <label asp-for="Id" class="control-label"></label>
+            <select asp-for="Id" asp-items="Model.StoreOptions" class="form-control"></select>
+            <span asp-validation-for="DefaultStore" class="text-danger"></span>
+        </div>
+    </form>
 </div>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Mvc.Rendering;
 using WebStore.App.Models;
 using WebStore.BLL;
 using WebStore.BLL.Interfaces;
@@ -29,7 +29,16 @@ namespace WebStore.App.Controllers
         // GET: Customer
         public ActionResult Index()
         {
-            return View();
+            var viewModel = new CustomerViewModel();
+            foreach(Customer customer in _customerRepo.GetCustomers(""))
+            {
+                viewModel.CustomerOptions.Add(new SelectListItem
+                {
+                    Value = customer.Id.ToString(),
+                    Text = customer.FullName,
+                });
+            }
+            return View(viewModel);
         }
         [HttpGet]
         // GET: Customer/Details/5
@@ -228,7 +237,7 @@ namespace WebStore.App.Controllers
             var order = _orderRepo.GetLatestOrder(id, storeId);
             foreach (Product product in order.ProductSet)
             {
-                if (formCollection.ContainsKey(product.Name))
+                if (formCollection.ContainsKey(product.Name) && formCollection[product.Name] != "")
                 {
                     order.AddProduct(product, int.Parse(formCollection[product.Name]));
                 }

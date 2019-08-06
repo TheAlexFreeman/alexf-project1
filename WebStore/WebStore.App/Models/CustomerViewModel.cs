@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WebStore.BLL;
+using WebStore.BLL.Interfaces;
 
 namespace WebStore.App.Models
 {
     public class CustomerViewModel
     {
+        //public static ICustomerRepository _customerRepo;
         public CustomerViewModel(Customer customer)
         {
             Id = customer.Id;
@@ -37,7 +39,10 @@ namespace WebStore.App.Models
             new SelectListItem {Value = "Arlington", Text = "Arlington"},
             new SelectListItem {Value = "Las Vegas", Text = "Las Vegas"}
         };
-
+        public List<SelectListItem> CustomerOptions = new List<SelectListItem>
+        {
+            new SelectListItem{Value = "0", Text = "(None)"}
+        };
 
         public Customer AsCustomer
         {
