@@ -86,5 +86,27 @@ namespace WebStore.Data.Repositories
                 .ThenInclude(po => po.Product)
                 .Select(Mapper.Map);
         }
+
+        public void AddOrder(Order order)
+        {
+            if (order.Id != 0)
+            {
+                throw new InvalidOperationException($"Order with ID {order.Id} already exists in database");
+            }
+            var entity = Mapper.Map(order);
+            entity.Id = 0;
+            _dbContext.Order.Add(entity);
+        }
+        
+        public void UpdateOrder(Order order)
+        {
+            if (order.Id == 0)
+            {
+                throw new KeyNotFoundException($"Order not found in database");
+            }
+            var currentEntity = _dbContext.Order.Find(order.Id);
+            var newEntity = Mapper.Map(order);
+            _dbContext.Entry(currentEntity).CurrentValues.SetValues(newEntity);
+        }
     }
 }

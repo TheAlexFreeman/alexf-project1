@@ -109,7 +109,7 @@ namespace WebStore.Data
                     ProductId = product.Id,
                     LocationId = location.Id,
                     Product = Map(product),
-                    Location = Map(location)
+                    Location = result
                 });
             }
             return result;

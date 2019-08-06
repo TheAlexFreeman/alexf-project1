@@ -14,6 +14,8 @@ namespace WebStore.BLL.Interfaces
         IEnumerable<Order> GetOrdersInPriceRange(double min, double max);
         IEnumerable<Order> GetOrdersWithOpenState(bool isOpen);
         void Save();
+        void AddOrder(Order order);
+        void UpdateOrder(Order order);
 
     }
 }

@@ -13,70 +13,28 @@ namespace WebStore.App.Models
         {
             Id = location.Id;
             Name = location.Name;
-            Products = new HashSet<ProductViewModel>();
-            foreach(Product product in location.Products)
-            {
-                Products.Add(new ProductViewModel(product));
-            }
-            Inv = new InventoryViewModel();
-            foreach(Item item in location.ItemsInStock)
-            {
-                Inv.AddItem(new ItemViewModel(item), location.Count(item));
-            }
+            Prices = new Dictionary<string, double>(location.Products.Select(p => new KeyValuePair<string, double>(p.Name, p.Price)));
+            Inv = new Dictionary<string, int>(location.ItemsInStock.Select(i => new KeyValuePair<string, int>(i.Name, location.Count(i))));
         }
-        public LocationViewModel() {}
-        public LocationViewModel(string name, InventoryViewModel inv=null, ISet<ProductViewModel> products=null, int id=0)
-        {
-            Id = id;
-            Name = name;
-            Products = products ?? new HashSet<ProductViewModel>();
-            Inv = inv ?? new InventoryViewModel();
-        }
+
+        public LocationViewModel() { }
+        
+
         public int Id { get; set; }
         public string Name { get; set; }
-        private readonly InventoryViewModel Inv;
-        public readonly ISet<ProductViewModel> Products;
-        //private readonly List<Customer> Customers;
-        //private readonly List<Order> Orders;
+        private readonly Dictionary<string, int> Inv;
+        public readonly Dictionary<string, double> Prices;
 
-        public ISet<ItemViewModel> ItemsInStock { get { return Inv.Items; } }
-
-        public int Count(ItemViewModel item) { return Inv.Count(item); }
-        
-        public bool ProductAvailable(ProductViewModel product, int quantity)
+        public int Count(string item) { return Inv[item]; }
+       
+        public Location AsLocation()
         {
-            if (product == null)
+            var location = new Location(Name, id: Id);
+            foreach (string productName in Prices.Keys)
             {
-                throw new ArgumentNullException(nameof(product), "ProductViewModel cannot be null");
+                location.Products.Add(new Product(productName, Prices[productName]));
             }
-            return Inv.ProductAvailable(product, quantity);
-        }
-        public bool ProductAvailable(ProductViewModel product)
-        {
-            return Inv.ProductAvailable(product, 1);
-        }
-
-        public int AddToInventory(ItemViewModel item, int toAdd)
-        {
-            return Inv.AddItem(item, toAdd);
-        }
-        public int AddToInventory(ItemViewModel item)
-        {
-            return Inv.AddItem(item);
-        }
-
-        public bool SubtractFromInventory(ItemViewModel item, int toSubtract)
-        {
-            return Inv.SubtractItem(item, toSubtract);
-        }
-        
-
-        public Location AsLocation
-        {
-            get
-            {
-                return new Location(Name, Inv.AsInventory, new HashSet<Product>(Products.Select(pvm => pvm.AsProduct)), Id);
-            }
+            return location;
         }
     }
 }

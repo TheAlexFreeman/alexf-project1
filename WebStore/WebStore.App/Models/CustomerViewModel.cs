@@ -14,11 +14,7 @@ namespace WebStore.App.Models
             Id = customer.Id;
             FirstName = customer.FirstName;
             LastName = customer.LastName;
-            if (customer.DefaultStore != null)
-            {
             DefaultStore = customer.DefaultStore?.Name;
-
-            }
         }
         public CustomerViewModel() { }
         public CustomerViewModel(string firstName, string lastName, LocationViewModel defaultStore = null, int id = 0)

@@ -16,58 +16,74 @@ namespace WebStore.App.Models
             Seller = new LocationViewModel(order.Seller);
             Start = order.Start;
             LastModified = order.LastModified;
-            if (order.IsOpen)
+            IsOpen = order.IsOpen;
+            Products = new Dictionary<string, int>();
+            foreach(Product product in order.Seller.Products)
             {
-                End = null;
-            } else
-            {
-                End = LastModified;
-            }
-            Products = new Dictionary<ProductViewModel, int>();
-            foreach(Product product in order.ProductSet)
-            {
-                Products.Add(new ProductViewModel(product), order.Quantity(product));
+                Products.Add(product.Name, order.Quantity(product));
             }
         }
-        public OrderViewModel() { Products = new Dictionary<ProductViewModel, int>(); Start = DateTime.Now; LastModified = Start; End = null; }
-        /// <summary>
-        /// Creates a new order with buyer, seller, and existing set of products
-        /// </summary>
-        /// <param name="buyer">CustomerViewModel buying this order</param>
-        /// <param name="seller">LocationViewModel where this order was sold</param>
-        /// <param name="products">Dictionary mapping products to quantities in this order</param>
-        /// <param name="id">Database ID of order</param>
-        public OrderViewModel(CustomerViewModel buyer, LocationViewModel seller, IDictionary<ProductViewModel, int> products = null, int id = 0)
-        {
-            Id = id;
-            Buyer = buyer ?? throw new ArgumentNullException();
-            Seller = seller ?? throw new ArgumentNullException();
-            Products = products ?? new Dictionary<ProductViewModel, int>();
-            Start = DateTime.Now;
-            LastModified = Start;
-            End = null;
-        }
-        /// <summary>
-        /// Creates a new order with buyer, seller, and empty product set
-        /// </summary>
-        /// <param name="buyer">CustomerViewModel who placed this order</param>
-        /// <param name="seller">LocationViewModel where this order was fulfilled</param>
-        /// <param name="time">Date and time this order was placed</param>
-        /// <param name="id">Database ID of order</param>
-        public OrderViewModel(CustomerViewModel buyer, LocationViewModel seller, DateTime start, DateTime? end = null, IDictionary<ProductViewModel, int> products = null, int id = 0)
-        {
-            Id = id;
-            Buyer = buyer ?? throw new ArgumentNullException();
-            Seller = seller ?? throw new ArgumentNullException();
-            Products = products ?? new Dictionary<ProductViewModel, int>();
-            Start = start;
-            LastModified = end ?? start;
-            if (end != null && end < start)
-            {
-                throw new ArgumentOutOfRangeException(nameof(end), "OrderViewModel cannot end before it begins");
-            }
-            End = end;
-        }
+
+        public OrderViewModel() { }
+
+        //public OrderViewModel() { Products = new Dictionary<string, int>(); Start = DateTime.Now; LastModified = Start; IsOpen = true; }
+        ///// <summary>
+        ///// Creates a new order with buyer, seller, and existing set of products
+        ///// </summary>
+        ///// <param name="buyer">CustomerViewModel buying this order</param>
+        ///// <param name="seller">LocationViewModel where this order was sold</param>
+        ///// <param name="products">Dictionary mapping products to quantities in this order</param>
+        ///// <param name="id">Database ID of order</param>
+        //public OrderViewModel(CustomerViewModel buyer, LocationViewModel seller, IDictionary<ProductViewModel, int> products = null, int id = 0)
+        //{
+        //    Id = id;
+        //    Buyer = buyer ?? throw new ArgumentNullException();
+        //    Seller = seller ?? throw new ArgumentNullException();
+        //    if (products == null)
+        //    {
+        //        Products = new Dictionary<string, int>();
+        //        Prices = new Dictionary<string, double>();
+        //    } else
+        //    {
+        //        Products = new Dictionary<string, int>(products.Select(kvp => new KeyValuePair<string, int>(kvp.Key.Name, kvp.Value)));
+        //        Prices = new Dictionary<string, double>(products.Select(kvp => new KeyValuePair<string, double>(kvp.Key.Name, kvp.Key.Price)));
+        //    }
+        //    Start = DateTime.Now;
+        //    LastModified = Start;
+        //}
+        ///// <summary>
+        ///// Creates a new order with buyer, seller, and empty product set
+        ///// </summary>
+        ///// <param name="buyer">CustomerViewModel who placed this order</param>
+        ///// <param name="seller">LocationViewModel where this order was fulfilled</param>
+        ///// <param name="time">Date and time this order was placed</param>
+        ///// <param name="id">Database ID of order</param>
+        //public OrderViewModel(CustomerViewModel buyer, LocationViewModel seller, DateTime start, DateTime? lastModified = null, IDictionary<ProductViewModel, int> products = null, int id = 0)
+        //{
+        //    Id = id;
+        //    Buyer = buyer ?? throw new ArgumentNullException();
+        //    Seller = seller ?? throw new ArgumentNullException();
+        //    if (products == null)
+        //    {
+        //        Products = new Dictionary<string, int>();
+        //        Prices = new Dictionary<string, double>();
+        //    }
+        //    else
+        //    {
+        //        Products = new Dictionary<string, int>(products.Select(kvp => new KeyValuePair<string, int>(kvp.Key.Name, kvp.Value)));
+        //        Prices = new Dictionary<string, double>(products.Select(kvp => new KeyValuePair<string, double>(kvp.Key.Name, kvp.Key.Price)));
+        //    }
+        //    Start = start;
+        //    if (lastModified == null || lastModified < start)
+        //    {
+        //        LastModified = start;
+        //    } else
+        //    {
+        //        LastModified = (DateTime)lastModified;
+        //    }
+        //}
+
+
         /// <summary>
         /// Database ID of this order
         /// </summary>
@@ -84,28 +100,32 @@ namespace WebStore.App.Models
         /// Date and time order was placed
         /// </summary>
         public DateTime Start { get; }
-        private DateTime? End { get; set; }
         public DateTime LastModified { get; set; }
+        public bool IsOpen { get; set; }
         /// <summary>
-        /// Set of products sold in order, with quantity of each
+        /// Names of products sold, with quantity of each
         /// </summary>
-        private readonly IDictionary<ProductViewModel, int> Products;
+        private readonly IDictionary<string, int> Products;
         /// <summary>
-        /// Convenience property to list all products in order
+        /// Prices of all products sold, indexed by product name 
         /// </summary>
-        public ISet<ProductViewModel> ProductSet => new HashSet<ProductViewModel>(Products.Keys);
+        public IDictionary<string, double> Prices => Seller?.Prices;
         /// <summary>
         /// Gets quantity of given product currently in order
         /// </summary>
         /// <param name="product">Product to count</param>
         /// <returns>Number of given product in order</returns>
-        public int Quantity(ProductViewModel product)
+        public int Quantity(string productName)
         {
-            if (!Products.ContainsKey(product))
+            if (string.IsNullOrWhiteSpace(productName))
+            {
+                throw new ArgumentNullException("Product name cannot be empty");
+            }
+            if (!Products.ContainsKey(productName))
             {
                 return 0;
             }
-            return Products[product];
+            return Products[productName];
         }
         /// <summary>
         /// Total price of this order, calculated from product prices
@@ -117,137 +137,31 @@ namespace WebStore.App.Models
                 double total = 0.0;
                 foreach (var product in Products.Keys)
                 {
-                    total += product.Price * Products[product];
+                    total += Prices[product] * Products[product];
                 }
                 return total;
             }
         }
-        /// <summary>
-        /// Cost to store of inventory items for all products ordered
-        /// </summary>
-        public double InventoryCost
-        {
-            get
-            {
-                double total = 0.0;
-                foreach (var product in Products.Keys)
-                {
-                    total += product.InventoryCost * Products[product];
-                }
-                return total;
-            }
-        }
-        /// <summary>
-        /// Store's profit from all products in order
-        /// </summary>
-        public double Profit { get { return Total - InventoryCost; } }
-        /// <summary>
-        /// Inventory of items needed for all products in this order
-        /// </summary>
-        public InventoryViewModel ItemsNeeded
-        {
-            get
-            {
-                InventoryViewModel totals = new InventoryViewModel();
-                foreach (ProductViewModel product in Products.Keys)
-                {
-                    totals.AddInventory(product.ItemsNeeded(Quantity(product)));
-                }
-                return totals;
-            }
-        }
-        /// <summary>
-        /// Adds the given quantity of a product to this order
-        /// </summary>
-        /// <param name="product">Product to be added to this order</param>
-        /// <param name="toAdd">Quantity of product to add</param>
-        public int AddProduct(ProductViewModel product, int toAdd)
-        {
-            if (product == null)
-            {
-                throw new ArgumentNullException(nameof(product), "Cannot add null to order.");
-            }
-            if (toAdd < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(toAdd), "Cannot add negative number of items to order.");
-            }
-            if (Products.ContainsKey(product))
-            {
-                Products[product] += toAdd;
-            }
-            else
-            {
-                Products.Add(product, toAdd);
-            }
-            LastModified = DateTime.Now;
-            return Products[product];
-        }
-        /// <summary>
-        /// Convenience method for adding one of some product
-        /// </summary>
-        /// <param name="product">Product to be added</param>
-        public int AddProduct(ProductViewModel product)
-        {
-            return AddProduct(product, 1);
-        }
-        /// <summary>
-        /// Subtracts quantity of given product from order total
-        /// </summary>
-        /// <param name="product">Product to subtract</param>
-        /// <param name="toSubtract">Quantity to subtract</param>
-        /// <returns>True iff quantity could be subtracted.</returns>
-        public bool SubtractProduct(ProductViewModel product, int toSubtract)
-        {
-            if (product == null)
-            {
-                throw new ArgumentNullException(nameof(product), "Cannot subtract null from order.");
-            }
-            if (toSubtract < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(toSubtract), "Cannot subtract negative number of items from order.");
-            }
-            if (Quantity(product) < toSubtract)
-            {
-                return false;
-            }
-            Products[product] -= toSubtract;
-            LastModified = DateTime.Now;
-            return true;
-        }
-        public bool SubtractProduct(ProductViewModel product)
-        {
-            return SubtractProduct(product, 1);
-        }
-        /// <summary>
-        /// Removes product from order altogether
-        /// </summary>
-        /// <param name="product">Product to remove</param>
-        public void RemoveProduct(ProductViewModel product)
-        {
-            Products.Remove(product);
-            LastModified = DateTime.Now;
-        }
-
-        public bool IsOpen { get { return End == null; } }
-
+        
         public DateTime Close()
         {
             if (!IsOpen)
             {
-                throw new InvalidOperationException("Cannot close order already closed.");
+                throw new InvalidOperationException("Order is already closed.");
             }
+            IsOpen = false;
             LastModified = DateTime.Now;
-            End = LastModified;
             return LastModified;
         }
 
 
-        public Order AsOrder
-        {
-            get
-            {
-                return new Order(Buyer.AsCustomer, Seller.AsLocation, Start, LastModified, IsOpen, new Dictionary<Product, int>(Products.Select(kvp => new KeyValuePair<Product, int>(kvp.Key.AsProduct, kvp.Value))), Id);
-            }
-        }
+        //public Order AsOrder
+        //{
+        //    get
+        //    {
+        //        return new Order(Buyer.AsCustomer, Seller.AsLocation, Start, LastModified, IsOpen,
+        //            new Dictionary<Product, int>(Products.Select(kvp => new KeyValuePair<Product, int>(kvp.Key.AsProduct, kvp.Value))), Id);
+        //    }
+        //}
     }
 }

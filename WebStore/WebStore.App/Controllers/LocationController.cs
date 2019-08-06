@@ -13,13 +13,19 @@ namespace WebStore.App.Controllers
     public class LocationController : Controller
     {
         private readonly ILocationRepository _locationRepo;
-        public LocationController(ILocationRepository locationRepo)
+        private readonly ICustomerRepository _customerRepo;
+        private readonly IOrderRepository _orderRepo;
+        public LocationController(ILocationRepository locationRepo, ICustomerRepository customerRepo, IOrderRepository orderRepo)
         {
             _locationRepo = locationRepo ?? throw new ArgumentNullException(nameof(locationRepo));
+            _customerRepo = customerRepo ?? throw new ArgumentNullException(nameof(customerRepo));
+            _orderRepo = orderRepo ?? throw new ArgumentNullException(nameof(orderRepo));
+
+
         }
 
         // GET: Location
-        public ActionResult Index([FromQuery] string search = "")
+        public ActionResult Select([FromQuery] string search = "")
         {
             IEnumerable<LocationViewModel> viewModel = _locationRepo.GetLocations()
                 .Where(l => l.Name.Contains(search))
@@ -37,7 +43,7 @@ namespace WebStore.App.Controllers
                 location = _locationRepo.GetLocationById(id);
             } catch (KeyNotFoundException)
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Select));
             }
             return View(new LocationViewModel(location));
         }
@@ -49,7 +55,7 @@ namespace WebStore.App.Controllers
         // GET: Location/Create
         public ActionResult Create()
         {
-            return View();
+            return View(new LocationViewModel());
         }
 
         // POST: Location/Create
@@ -67,7 +73,7 @@ namespace WebStore.App.Controllers
                 var newLocation = viewModel.AsLocation;
                 _locationRepo.AddLocation(newLocation);
                 _locationRepo.Save();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Select));
             }
             catch
             {
@@ -85,7 +91,7 @@ namespace WebStore.App.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Select));
             }
             return View(new LocationViewModel(location));
         }
@@ -105,7 +111,7 @@ namespace WebStore.App.Controllers
                 var newLocation = viewModel.AsLocation;
                 _locationRepo.EditLocation(id, newLocation);
                 _locationRepo.Save();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Select));
             }
             catch
             {
@@ -123,7 +129,7 @@ namespace WebStore.App.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Select));
             }
             return View(new LocationViewModel(location));
         }
@@ -138,12 +144,42 @@ namespace WebStore.App.Controllers
                 // TODO: Add delete logic here
                 _locationRepo.DeleteLocation(id);
                 _locationRepo.Save();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Select));
             }
             catch
             {
                 return View();
             }
         }
+
+        //[HttpGet]
+        //public ActionResult Order(string name, string customer)
+        //{
+        //    try
+        //    {
+        //        var location = new LocationViewModel(_locationRepo.GetLocationByName(name));
+        //        var customerName = customer.Split();
+        //        var buyer = new CustomerViewModel(_customerRepo.GetCustomerByName(customerName[0], customerName[1]));
+        //        var orderViewModel = new OrderViewModel(buyer, location);
+        //        _orderRepo.AddOrder(orderViewModel.AsOrder);
+        //        _orderRepo.Save();
+        //        return View(new OrderViewModel(buyer, location));
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        return RedirectToAction(nameof(Select));
+        //    }
+        //}
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Order(OrderViewModel viewModel)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return View(viewModel);
+        //    }
+        //    var order = viewModel.AsOrder;
+
+        //}
     }
 }

@@ -18,7 +18,7 @@ namespace WebStore.App.Controllers
             _orderRepo = orderRepo ?? throw new ArgumentNullException("Order repository cannot be null");
         }
 
-
+        [HttpGet]
         // GET: Order
         public ActionResult Index()
         {

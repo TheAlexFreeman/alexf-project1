@@ -14,9 +14,13 @@ namespace WebStore.App.Controllers
     public class CustomerController : Controller
     {
         private readonly ICustomerRepository _customerRepo;
-        public CustomerController(ICustomerRepository customerRepo)
+        private readonly ILocationRepository _locationRepo;
+        private readonly IOrderRepository _orderRepo;
+        public CustomerController(ICustomerRepository customerRepo, ILocationRepository locationRepo, IOrderRepository orderRepo)
         {
             _customerRepo = customerRepo ?? throw new ArgumentNullException("Customer repository cannot be null");
+            _locationRepo = locationRepo ?? throw new ArgumentNullException(nameof(locationRepo));
+            _orderRepo = orderRepo ?? throw new ArgumentNullException(nameof(orderRepo));
         }
 
         [HttpGet]
@@ -34,7 +38,8 @@ namespace WebStore.App.Controllers
             {
                 customer = _customerRepo.GetCustomerById(id);
 
-            } catch (KeyNotFoundException)
+            }
+            catch (KeyNotFoundException)
             {
                 return RedirectToAction(nameof(List));
             }
@@ -63,7 +68,8 @@ namespace WebStore.App.Controllers
                 try
                 {
                     customer = _customerRepo.GetCustomerByName(viewModel.FirstName, viewModel.LastName);
-                } catch (KeyNotFoundException)
+                }
+                catch (KeyNotFoundException)
                 {
                     customer = viewModel.AsCustomer;
                     _customerRepo.AddCustomer(customer);
@@ -86,7 +92,8 @@ namespace WebStore.App.Controllers
             {
                 var customers = _customerRepo.SearchCustomersByName(search);
                 return View(customers.Select(c => new CustomerViewModel(c)));
-            } catch
+            }
+            catch
             {
                 // Error view model (How do I work this???)
                 return View(nameof(Enter));
@@ -101,7 +108,8 @@ namespace WebStore.App.Controllers
             {
                 var customer = _customerRepo.GetCustomerById(id);
                 return View(new CustomerViewModel(customer));
-            } catch
+            }
+            catch
             {
                 return View(nameof(List));
             }
@@ -174,6 +182,61 @@ namespace WebStore.App.Controllers
             {
                 // Use ErrorViewModel
                 return RedirectToAction(nameof(List));
+            }
+        }
+
+        //[HttpGet]
+        //public ActionResult SelectLocation()
+        //{
+        //    try
+        //    {
+        //        //
+        //    }
+        //}
+
+
+        [HttpGet]
+        public ActionResult Order(int id, string storeName)
+        {
+            try
+            {
+                var seller = new LocationViewModel(_locationRepo.GetLocationByName(storeName));
+                var buyer = new CustomerViewModel(_customerRepo.GetCustomerById(id));
+                var order = new Order(buyer.AsCustomer, seller.AsLocation);
+                _orderRepo.AddOrder(order);
+                _orderRepo.Save();
+                return View(new OrderViewModel(order));
+            }
+            catch (KeyNotFoundException)
+            {
+                return RedirectToAction(nameof(LocationController.Select));
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Order(OrderViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+            var order = viewModel.AsOrder;
+            _orderRepo.UpdateOrder(order);
+            _orderRepo.Save();
+            return RedirectToAction(nameof(OrderHistory), new { id = viewModel.Buyer.Id });
+        }
+
+        [HttpGet]
+        public ActionResult OrderHistory(int id)
+        {
+            try
+            {
+                var orders = _orderRepo.GetOrderHistoryByCustomer(id);
+                return View(orders.Select(o => new OrderViewModel(o)));
+            }
+            catch
+            {
+                return View(nameof(Details), new { id });
             }
         }
     }

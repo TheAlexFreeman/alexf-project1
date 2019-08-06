@@ -7,7 +7,7 @@ namespace WebStore.BLL
 {
     public class Order
     {
-        public Order() { Products = new Dictionary<Product, int>(); Start = DateTime.Now; LastModified = Start; End = null; }
+        public Order() { Products = new Dictionary<Product, int>(); Start = DateTime.Now; LastModified = Start; IsOpen = true; }
         //public Order(Customer buyer, Location seller, int id = 0)
         //{
         //    Id = id;
@@ -32,7 +32,7 @@ namespace WebStore.BLL
             Products = products ?? new Dictionary<Product, int>();
             Start = DateTime.Now;
             LastModified = Start;
-            End = null;
+            IsOpen = true;
         }
         /// <summary>
         /// Creates a new order with buyer, seller, and empty product set
@@ -48,18 +48,15 @@ namespace WebStore.BLL
             Seller = seller ?? throw new ArgumentNullException();
             Products = products ?? new Dictionary<Product, int>();
             Start = start;
-            if (lastModified != null && lastModified < start)
+            if (lastModified == null || lastModified < start)
             {
-                throw new ArgumentOutOfRangeException(nameof(lastModified), "Order cannot be modified before it begins");
+                LastModified = start;
             }
-            LastModified = lastModified ?? start;
-            if (isOpen)
+            else
             {
-                End = null;
-            } else
-            {
-                End = LastModified;
+                LastModified = (DateTime)lastModified;
             }
+            IsOpen = isOpen;
         }
         /// <summary>
         /// Database ID of this order
@@ -77,8 +74,8 @@ namespace WebStore.BLL
         /// Date and time order was placed
         /// </summary>
         public DateTime Start { get; }
-        private DateTime? End { get; set; }
         public DateTime LastModified { get; set; }
+        public bool IsOpen { get; set; }
         /// <summary>
         /// Set of products sold in order, with quantity of each
         /// </summary>
@@ -221,16 +218,14 @@ namespace WebStore.BLL
             LastModified = DateTime.Now;
         }
 
-        public bool IsOpen { get { return End == null; } }
-
         public DateTime Close()
         {
             if (!IsOpen)
             {
                 throw new InvalidOperationException("Cannot close order already closed.");
             }
+            IsOpen = false;
             LastModified = DateTime.Now;
-            End = LastModified;
             return LastModified;
         }
     }

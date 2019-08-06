@@ -44,5 +44,11 @@
 </div>
 <div>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @if (Model.DefaultStore != null)
+    {
+        @Html.ActionLink($"Order from default store ({Model.DefaultStore})", "Order", "Customer", new { id = Model.Id, storeName = Model.DefaultStore }) @: |
+    }
+    @Html.ActionLink("Select a store", "Select", "Location") |
+
     <a asp-action="Index">Back to List</a>
 </div>

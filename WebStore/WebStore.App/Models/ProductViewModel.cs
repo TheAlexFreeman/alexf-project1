@@ -13,47 +13,30 @@ namespace WebStore.App.Models
             Id = product.Id;
             Name = product.Name;
             Price = product.Price;
-            Parts = new InventoryViewModel();
-            foreach(Item item in product.Items)
-            {
-                Parts.AddItem(new ItemViewModel(item), product.Count(item));
-            }
+            Parts = new Dictionary<string, int>(product.Items.Select(i => new KeyValuePair<string, int>(i.Name, product.Count(i))));
+            InventoryCosts = new Dictionary<string, double>(product.Items.Select(i => new KeyValuePair<string, double>(i.Name, i.Cost)));
         }
         public ProductViewModel() { }
-        public ProductViewModel(string name, double price, int id = 0)
-        {
-            Id = id;
-            Name = name;
-            Price = price;
-            Parts = new InventoryViewModel();
-        }
-        public ProductViewModel(string name, double price, Dictionary<ItemViewModel, int> parts, int id = 0)
-        {
-            Id = id;
-            Name = name;
-            Price = price;
-            Parts = new InventoryViewModel(parts);
-        }
         
         public int Id { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
-        private readonly InventoryViewModel Parts;
-        public ISet<ItemViewModel> Items { get { return Parts.Items; } }
-        public double InventoryCost { get { return Parts.TotalCost; } }
-        public double SaleProfit { get { return Price - InventoryCost; } }
+        private readonly Dictionary<string, int> Parts;
+        private readonly Dictionary<string, double> InventoryCosts;
 
-        public int Count(ItemViewModel item)
+        public double SaleProfit => Price - InventoryCosts.Select(kvp => kvp.Value * Count(kvp.Key)).Sum();
+
+        public int Count(string item)
         {
-            return Parts.Count(item);
+            return Parts[item];
         }
 
-        public InventoryViewModel ItemsNeeded(int quantity)
+        public Inventory ItemsNeeded(int quantity)
         {
-            var result = new InventoryViewModel();
-            foreach (ItemViewModel item in Items)
+            var result = new Inventory();
+            foreach (string itemName in Parts.Keys)
             {
-                result.AddItem(item, Count(item) * quantity);
+                result.AddItem(new Item(itemName, InventoryCosts[itemName]), Count(itemName) * quantity);
             }
             return result;
         }
@@ -63,7 +46,7 @@ namespace WebStore.App.Models
         {
             get
             {
-                return new Product(Name, Price, Parts.AsInventory, Id);
+                return new Product(Name, Price, ItemsNeeded(1), Id);
             }
         }
     }
