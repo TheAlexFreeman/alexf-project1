@@ -22,5 +22,5 @@ steps:
     command: test
     projects: WebStore
 
-- script: dotnet publish -o out
+- script: dotnet publish WebStore.App -o out
   displayName: dotnet publish
