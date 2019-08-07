@@ -42,4 +42,12 @@ steps:
     packageForLinux: $(Build.ArtifactStagingDirectory)/**/*.zip
     RemoveAdditionalFilesFlag: true
 
+- task: SonarCloudPrepare@1
+  displayName: prepare sonar cloud analysis
+  inputs:
+    SonarCloud: 'alexf-project1-sonarcloud'
+    organization: 'alexf-project1'
+    scannerMode: 'MSBuild'
+    projectKey: 'alexf-project1'
+    projectName: 'alexf-project1'
 - task: SonarCloudAnalyze@1
