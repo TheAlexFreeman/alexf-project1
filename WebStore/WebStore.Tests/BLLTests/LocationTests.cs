@@ -130,7 +130,7 @@ namespace WebStore.Tests.BLLTests
             // Act
             Action subtractNull = () => location.SubtractFromInventory(null, 0);
             // Assert
-            Assert.Throws<ArgumentNullException>(subtractNull);
+            Assert.Throws<KeyNotFoundException>(subtractNull);
         }
     }
 }

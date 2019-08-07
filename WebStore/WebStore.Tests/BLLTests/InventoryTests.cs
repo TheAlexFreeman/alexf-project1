@@ -52,9 +52,9 @@ namespace WebStore.Tests.BLLTests
         {
             // Arrange
             var inventory = new Inventory();
-            var item1 = new Item("", 1);
-            var item2 = new Item("", 2);
-            var item3 = new Item("", 3);
+            var item1 = new Item("Item1", 1);
+            var item2 = new Item("Item2", 2);
+            var item3 = new Item("Item3", 3);
             // Act
             inventory.AddItem(item1, q1);
             inventory.AddItem(item2, q2);
@@ -72,8 +72,8 @@ namespace WebStore.Tests.BLLTests
             // Arrange
             var inventory1 = new Inventory();
             var inventory2 = new Inventory();
-            var item1 = new Item("", 1);
-            var item2 = new Item("", 2);
+            var item1 = new Item("Item1", 1);
+            var item2 = new Item("Item2", 2);
             inventory1.AddItem(item1, q11);
             inventory1.AddItem(item2, q12);
             inventory2.AddItem(item1, q21);
