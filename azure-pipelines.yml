@@ -22,5 +22,8 @@ steps:
     command: test
     projects: WebStore
 
-- script: dotnet publish WebStore.App -o out
+- task: DotNetCoreCLI@2
   displayName: dotnet publish
+  inputs:
+    command: 'publish'
+    projects: WebStore
