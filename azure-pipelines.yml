@@ -13,7 +13,19 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
+
+
 steps:
+
+- task: SonarCloudPrepare@1
+  displayName: prepare SonarCloud analysis
+  inputs:
+    SonarCloud: 'alexf-project1-sonarcloud'
+    organization: 'alexf-project1'
+    scannerMode: 'MSBuild'
+    projectKey: 'alexf-project1'
+    projectName: 'alexf-project1'
+
 - script: dotnet build --configuration $(buildConfiguration)
   workingDirectory: WebStore
   displayName: 'dotnet build $(buildConfiguration)'
@@ -42,14 +54,6 @@ steps:
     packageForLinux: $(Build.ArtifactStagingDirectory)/**/*.zip
     RemoveAdditionalFilesFlag: true
 
-- task: SonarCloudPrepare@1
-  displayName: prepare SonarCloud analysis
-  inputs:
-    SonarCloud: 'alexf-project1-sonarcloud'
-    organization: 'alexf-project1'
-    scannerMode: 'MSBuild'
-    projectKey: 'alexf-project1'
-    projectName: 'alexf-project1'
 
 - task: SonarCloudAnalyze@1
   displayName: run SonarCloud analysis
