@@ -38,3 +38,5 @@ steps:
     azureSubscription: 'Free Trial(15395430-a4c4-4792-9906-2ee3eccc21ae)'
     appType: 'webApp'
     WebAppName: 'freeman1907webstore'
+    packageForLinux: $(Build.ArtifactStagingDirectory)/**/*.zip
+    RemoveAdditionalFilesFlag: true
