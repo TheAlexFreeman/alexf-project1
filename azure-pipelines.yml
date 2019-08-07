@@ -17,6 +17,10 @@ steps:
   workingDirectory: WebStore
   displayName: 'dotnet build $(buildConfiguration)'
 - task: DotNetCoreCLI@2
+  displayName: dotnet test
   inputs:
     command: test
     projects: WebStore
+
+- script: dotnet publish -o out
+  displayName: dotnet publish
