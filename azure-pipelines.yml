@@ -16,6 +16,7 @@ steps:
 - script: dotnet build --configuration $(buildConfiguration)
   workingDirectory: WebStore
   displayName: 'dotnet build $(buildConfiguration)'
+
 - task: DotNetCoreCLI@2
   displayName: dotnet test
   inputs:
@@ -23,7 +24,17 @@ steps:
     projects: WebStore
 
 - task: DotNetCoreCLI@2
-  displayName: dotnet publish
+  displayName: dotnet publish + zip
   inputs:
     command: 'publish'
-    projects: WebStore
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
+    publishWebProjects: false
+    projects: WebStore/WebStore.App
+    zipAfterPublish: true
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Free Trial(15395430-a4c4-4792-9906-2ee3eccc21ae)'
+    appType: 'webApp'
+    WebAppName: 'freeman1907webstore'
