@@ -7,7 +7,7 @@ namespace WebStore.BLL
 {
     public class Location
     {
-        public Location() { Inv = new Inventory(); }
+        public Location() { Inv = new Inventory(); Products = new HashSet<Product>(); }
         public Location(string name, Inventory inv=null, ISet<Product> products=null, int id=0)
         {
             Id = id;
